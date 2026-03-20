@@ -13,7 +13,7 @@ license contained in the top-level subdirectories.  If such a subdirectory does
 not contain a LICENSE file, then it is automatically licensed as described in
 the otherwise encompassing StochDFO [LICENSE](/LICENSE).
 
-Copyright (c) 2026, Mickael Binois and UChicago Argonne LLC through Argonne
+Copyright (c) 2026, Mickaël Binois and UChicago Argonne LLC through Argonne
 National Laboratory (subject to receipt of any required approvals from the U.S.
 Dept. of Energy).  All rights reserved.
 
