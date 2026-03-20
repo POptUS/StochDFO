@@ -17,6 +17,10 @@ Copyright (c) 2026, Mickaël Binois and UChicago Argonne LLC through Argonne
 National Laboratory (subject to receipt of any required approvals from the U.S.
 Dept. of Energy).  All rights reserved.
 
+**TODO**: Once things get sorted, determine if the correct license and copyright
+information should be added as a header to all OGPIT files.  This might be a
+good idea, especially since the code is not currently distributed in a package.
+
 ## Support
 
 To 
