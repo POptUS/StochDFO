@@ -1,2 +1,2 @@
-OGPIT - Optimization by Gaussian processes in Trust-regions
+OGPIT - Optimization by Gaussian Processes in Trust-regions
 ===========================================================
