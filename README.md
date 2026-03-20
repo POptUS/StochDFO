@@ -13,9 +13,9 @@ license contained in the top-level subdirectories.  If such a subdirectory does
 not contain a LICENSE file, then it is automatically licensed as described in
 the otherwise encompassing StochDFO [LICENSE](/LICENSE).
 
-Copyright (c) 2026, UChicago Argonne LLC through Argonne National Laboratory
-(subject to receipt of any required approvals from the U.S. Dept. of Energy).
-All rights reserved.
+Copyright (c) 2026, Mickael Binois and UChicago Argonne LLC through Argonne
+National Laboratory (subject to receipt of any required approvals from the U.S.
+Dept. of Energy).  All rights reserved.
 
 ## Support
 
@@ -45,4 +45,5 @@ send an email to the POptUS development team at
 
 ## Cite StochDFO
 
-**TODO**: Define this once this software is available in earnest.
+**TODO**: Define this once this software is available in earnest.  This should
+likely be a package-related document (e.g., User Guide) listing all authors.
