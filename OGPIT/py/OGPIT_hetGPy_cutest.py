@@ -71,13 +71,13 @@ for p in range(nprob):
     gammap = 0.9
     beta = 1e-3
     eta1 = 0.2
-    minnnTR = d + 1
     relvarxnew = 4
     trace = 1
     deter = False
     modtype = "homGP"
     ncand = "small"
     nn = 5 * d
+    minnn = d + 1
     maxnn = 200
     delta = 0.2  # initial trust region radius
     mindelta = 1e-6
@@ -131,7 +131,6 @@ for p in range(nprob):
             mindelta=mindelta,
             maxdelta=maxdelta,
             ninit=ninit,
-            nn=nn,
             trace=trace,
             mintheta=mintheta,
             maxtheta=maxtheta,
@@ -141,9 +140,8 @@ for p in range(nprob):
             eta1=eta1,
             deter=deter,
             gammam=gammam,
-            gammap=gammap,
             maxnn=maxnn,
-            minnnTR=minnnTR,
+            minnn=minnn,
             relvarxnew=relvarxnew,
             modtype=modtype,
             iso=iso,
