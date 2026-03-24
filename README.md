@@ -37,7 +37,24 @@ send an email to the POptUS development team at
 
 ## Installation & Testing
 
-**TODO**: Fill this in as code is brought in and tests are stood up. 
+This repository presently contains only the OGPIT tool as a collection of Python
+source code files.  To run OGPIT, it is suggested that users either
+
+* run the code from ``/path/to/StochDFO/OGPIT/py`` or
+* add ``/path/to/StochDFO/OGPIT/py`` to their ``PYTHONPATH`` environment
+  variable.
+
+Users can setup their target Python virtual environment with most of the OGPIT
+external dependences by, for example, activating their environment and running
+```
+python -m pip install -r /path/to/StochDFO/requirements.txt
+```
+
+Some of the code requires the use of the contents of the
+[BenDFO](https://github.com/POptUS/BenDFO) repository, which is not distributed
+as a Python package.  After cloning the BenDFO repository and before using
+OGPIT, users should set the ``BENDFO_PATH`` environment variable to the root of
+their BenDFO clone.
 
 ## Contributing to StochDFO
 

@@ -47,19 +47,31 @@ import cma
 test_cma = False
 test_cman = False
 
-usr = "MB" # "JL"
-# usr = "JL"
-if usr == "MB":
-    sys.path.append("/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/")
-    sys.path.append("/home/mbinois/Documents/GitProjects/BenDFO/py/")
-    # sys.path.append(".")
-
 from OGPIT_hetGPy import OGPIT
 from calfun import calfun
 from dfoxs import dfoxs
+from pathlib import Path
+
+def log_and_abort(msg):
+    print()
+    print(msg)
+    print()
+    sys.exit(1)
 
 
 if __name__ == "__main__":
+    # Setup use of BenDFO clone based on user-provided path
+    if "BENDFO_PATH" not in os.environ:
+        log_and_abort(
+            "Please set the BENDFO_PATH environment variable to root of a BenDFO clone"
+        )
+    bendfo_path = Path(os.environ["BENDFO_PATH"]).resolve()
+    if not bendfo_path.is_dir():
+        log_and_abort(
+            "Invalid path specified in BENDFO_PATH environment variable"
+        )
+    sys.path.append(bendfo_path.joinpath("py"))
+
     if not os.path.exists("./benchmark_results"):
         os.makedirs("./benchmark_results")
 
@@ -69,11 +81,7 @@ if __name__ == "__main__":
     size = comm.Get_size()
 
     factor = 10
-    if usr == "MB":
-        probs = np.loadtxt("/home/mbinois/Documents/GitProjects/BenDFO/data/dfo.dat")
-    else:
-        probs = np.loadtxt("/home/jlarson/research/poptus/BenDFO/data/dfo.dat")
-
+    probs = np.loadtxt(bendfo_path.joinpath("data", "dfo.dat"))
     probtype = 'smooth'
     nreps = 30 
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
