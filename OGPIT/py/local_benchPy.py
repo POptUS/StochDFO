@@ -205,7 +205,7 @@ if __name__ == "__main__":
         eta1 = 0.2
 
         nn = 5 * d
-        minnnTR = d + 1  # d + 1 is better for deterministic
+        minnn = d + 1  # d + 1 is better for deterministic
         maxnn = max(200, 10 * d)
         delta = 0.1  # initial trust region radius
         mindelta = 1e-6
