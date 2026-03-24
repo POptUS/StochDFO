@@ -40,11 +40,6 @@ import time
 
 from mpi4py import MPI
 
-usr = "MB" # "JL"
-if usr == "MB":
-    sys.path.append("/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python")
-    sys.path.append(".")
-
 from OGPIT_hetGPy import OGPIT
 
 from scipy.interpolate import make_interp_spline,interp1d

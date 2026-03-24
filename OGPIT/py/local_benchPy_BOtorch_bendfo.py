@@ -38,6 +38,7 @@ import scipy
 import random
 import time
 
+from pathlib import Path
 from mpi4py import MPI
 
 from scipy.interpolate import make_interp_spline,interp1d
@@ -80,13 +81,6 @@ test_logEI = False
 
 # maxtime = 3600 # Stop after 1h of running time
 maxtime = 600 # Stop after 1h of running time
-
-# usr = "MB" # "JL"
-usr = "JL" # "JL"
-if usr == "MB":
-    # sys.path.append("/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/")
-    sys.path.append("/home/mbinois/Documents/GitProjects/BenDFO/py/")
-    # sys.path.append(".")
 
 # from OGPIT_hetGPy import OGPIT3
 from calfun import calfun
@@ -196,7 +190,30 @@ def generate_batch(
     return X_next
 
 
+def log_and_abort(msg):
+    print()
+    print(msg)
+    print()
+    sys.exit(1)
+
+
 if __name__ == "__main__":
+    # Setup use of BenDFO clone based on user-provided path
+    if "BENDFO_PATH" not in os.environ:
+        log_and_abort(
+            "Please set the BENDFO_PATH environment variable to root of a BenDFO clone"
+        )
+    BENDFO_PATH = Path(os.environ["BENDFO_PATH"]).resolve()
+    BENDFO_PY_PATH = BENDFO_PATH.joinpath("py")
+    BENDFO_DFO_DAT = BENDFO_PATH.joinpath("data", "dfo.dat")
+    if not BENDFO_PATH.is_dir():
+        log_and_abort(f"{BENDFO_PATH} does not exist or is not a directory")
+    elif not BENDFO_PY_PATH.is_dir():
+        log_and_abort(f"{BENDFO_PY_PATH} does not exist or is not a directory")
+    elif not BENDFO_DFO_DAT.is_file():
+        log_and_abort(f"{BENDFO_DFO_DAT} does not exist or is not a file")
+    sys.path.append(BENDFO_PY_PATH)
+
     if not os.path.exists("./benchmark_results"):
         os.makedirs("./benchmark_results")
 
@@ -206,11 +223,7 @@ if __name__ == "__main__":
     size = comm.Get_size()
 
     factor = 10
-    if usr == "MB":
-        probs = np.loadtxt("/home/mbinois/Documents/GitProjects/BenDFO/data/dfo.dat")
-    else:
-        probs = np.loadtxt("/home/jlarson/research/poptus/BenDFO/data/dfo.dat")
-
+    probs = np.loadtxt(BENDFO_DFO_DAT)
     probtype = 'smooth'
     nreps = 30
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
