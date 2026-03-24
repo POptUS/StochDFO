@@ -5,6 +5,9 @@ Contents
 --------
 * ``OGPIT_hetGPy.py`` - Main OGPIT functionality.
 * ``OGPIT_hetGPy_cutest.py`` - OGPIT for the CUTEst benchmark 2 test function.
+   - Users that would like to run this must also manually install
+     [PyCUTEst](https://jfowkes.github.io/pycutest/_build/html/index.html)
+     (including CUTEst). 
 * ``local_benchPy.py`` - Run OGPIT on benchmark 1.
 * ``local_benchPy_bendfo.py`` - Run OGPIT on benchmark 2.
 * ``local_benchPy_BOtorch_bendfo.py`` - Run OGPIT with BoTorch and Turbo on benchmark 2.
