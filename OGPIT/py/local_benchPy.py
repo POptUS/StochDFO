@@ -264,10 +264,10 @@ if __name__ == "__main__":
                     return noisyfun(fn, x, noise = nois, ns=ns)
 
                 starttime = time.time()
-                res = OGPIT(func=func, Low=lower, Upp=upper, nfmax=budget0, delta=delta, mindelta=mindelta, maxnn=maxnn,
-                    maxdelta=maxdelta, ninit=ninit, nn=nn, trace=trace, mintheta=mintheta, maxtheta=maxtheta, acqtype=acq_type,
-                    vredthrestot=vredthrestot, maxrep=maxrep, beta=beta, eta1=eta1, deter=deter, normalize=True, imsevar = imsevar,
-                    gammam=gammam, gammap=gammap, lightreturn=lightreturn, minnnTR=minnnTR, modtype=model_type, boots=True, iso=iso)
+                res = OGPIT(func=func, Low=lower, Upp=upper, nfmax=budget0, gammam=gammam, delta=delta, mindelta=mindelta, maxdelta=maxdelta,
+                            mintheta=mintheta, maxtheta=maxtheta, trace=trace, vredthrestot=vredthrestot, maxrep=maxrep, beta=beta, eta1=eta1,
+                            minnn=minnn, maxnn=maxnn, deter=deter, modtype=model_type, iso=iso, normalize=True, ninit=ninit, acqtype=acq_type,
+                            imsevar = imsevar, lightreturn=lightreturn, boots=True)
                 runtime = time.time() - starttime
 
                 # Naive regret: compute regret at evaluated points
