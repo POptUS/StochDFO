@@ -65,12 +65,16 @@ if __name__ == "__main__":
         log_and_abort(
             "Please set the BENDFO_PATH environment variable to root of a BenDFO clone"
         )
-    bendfo_path = Path(os.environ["BENDFO_PATH"]).resolve()
-    if not bendfo_path.is_dir():
-        log_and_abort(
-            "Invalid path specified in BENDFO_PATH environment variable"
-        )
-    sys.path.append(bendfo_path.joinpath("py"))
+    BENDFO_PATH = Path(os.environ["BENDFO_PATH"]).resolve()
+    BENDFO_PY_PATH = BENDFO_PATH.joinpath("py")
+    BENDFO_DFO_DAT = BENDFO_PATH.joinpath("data", "dfo.dat")
+    if not BENDFO_PATH.is_dir():
+        log_and_abort(f"{BENDFO_PATH} does not exist or is not a directory")
+    elif not BENDFO_PY_PATH.is_dir():
+        log_and_abort(f"{BENDFO_PY_PATH} does not exist or is not a directory")
+    elif not BENDFO_DFO_DAT.is_file():
+        log_and_abort(f"{BENDFO_DFO_DAT} does not exist or is not a file")
+    sys.path.append(BENDFO_PY_PATH)
 
     if not os.path.exists("./benchmark_results"):
         os.makedirs("./benchmark_results")
@@ -81,7 +85,7 @@ if __name__ == "__main__":
     size = comm.Get_size()
 
     factor = 10
-    probs = np.loadtxt(bendfo_path.joinpath("data", "dfo.dat"))
+    probs = np.loadtxt(BENDFO_DFO_DAT)
     probtype = 'smooth'
     nreps = 30 
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
