@@ -87,7 +87,6 @@ if __name__ == "__main__":
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
     
     gammam = 0.8
-    gammap = 0.5
     beta = 1e-3
     eta1 = 0.2
     delta = 0.1  # initial trust region radius
@@ -121,7 +120,7 @@ if __name__ == "__main__":
         ninit = max(10, 2 * d)
 
         nn = 5 * d
-        minnnTR = d + 1  # d + 1 is better for deterministic
+        minnn = d + 1  # d + 1 is better for deterministic
         maxnn = max(200, 10 * d)
 
         X_0 = dfoxs(d, nprob, int(factor**factor_power))
@@ -235,9 +234,9 @@ if __name__ == "__main__":
                     res = dict(Xall= allXs, Xks= allXs, evalits= np.arange(0, allXs.shape[0])+1)
                 else:
                     res = OGPIT(func=objective, Low=lower, Upp=upper, nfmax=budget0, delta=delta, mindelta=mindelta, maxnn=maxnn,
-                        maxdelta=maxdelta, ninit=ninit, nn=nn, trace=trace, mintheta=mintheta, maxtheta=maxtheta, acqtype=acq_type,
+                        maxdelta=maxdelta, ninit=ninit, trace=trace, mintheta=mintheta, maxtheta=maxtheta, acqtype=acq_type,
                         vredthrestot=vredthrestot, maxrep=maxrep, beta=beta, eta1=eta1, deter=deter, normalize=True, imsevar = imsevar,
-                        gammam=gammam, gammap=gammap, lightreturn=lightreturn, minnnTR=minnnTR, modtype=model_type, boots=True, iso=iso,
+                        gammam=gammam, lightreturn=lightreturn, minnn=minnn, modtype=model_type, boots=True, iso=iso,
                         Xinit=Xinit,Zinit=Zinit)
                 runtime = time.time() - starttime
 
