@@ -3,9 +3,9 @@ MIT License
 
 Stochastic Derivative-Free Optimization (StochDFO)
 Part of POptUS: Practical Optimization Using Structure
-Copyright (c) 2026, Mickaël Binois and UChicago Argonne LLC through Argonne
-National Laboratory (subject to receipt of any required approvals from the U.S.
-Dept. of Energy).  All rights reserved.
+Copyright (c) 2026, Inria and UChicago Argonne LLC through Argonne National
+Laboratory (subject to receipt of any required approvals from the U.S.  Dept. of
+Energy).  All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
