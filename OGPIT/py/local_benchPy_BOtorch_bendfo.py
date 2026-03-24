@@ -181,7 +181,7 @@ if __name__ == "__main__":
     if usr == "MB":
         probs = np.loadtxt("/home/mbinois/Documents/GitProjects/BenDFO/data/dfo.dat")
     else:
-        probs = np.loadtxt("/home/jmlarson/research/poptus/BenDFO/data/dfo.dat")
+        probs = np.loadtxt("/home/jlarson/research/poptus/BenDFO/data/dfo.dat")
 
     probtype = 'smooth'
     nreps = 30
