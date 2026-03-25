@@ -44,6 +44,11 @@ source code files.  To run OGPIT, it is suggested that users either
 * add ``/path/to/StochDFO/OGPIT/py`` to their ``PYTHONPATH`` environment
   variable.
 
+`mpi4py` is an external dependence that is installed by the procedure below.
+Please ensure that an
+[MPI implementation is installed](https://mpi4py.readthedocs.io/en/stable/install.html)
+for use with `mpi4py` before setting up a Python environment for use with OGPIT.
+
 Users can setup their target Python virtual environment with most of the OGPIT
 external dependences by, for example, activating their environment and running
 ```
