@@ -80,13 +80,13 @@ def make_pyCUTEst_problem_list():
     indefm = import_problem("INDEFM", sifParams={"N": 10})  # letting ALPHA be default 0.5
     dqdrtic = import_problem("DQDRTIC", sifParams={"N": 10})
     #    fminsurf2 = import_problem('FMINSRF2', sifParams={'P': 4}) # n=16
-    fletcbv3 = import_problem("FLETCBV3", sifParams={"N": 10, "KAPPA": 0})
-    modbeale = import_problem("MODBEALE", sifParams={"N/2": 1, "ALPHA": 50})
-    broyndbdls = import_problem("BROYDNBDLS", sifParams={"N": 10, "KAPPA1": 2, "KAPPA2": 5, "KAPPA3": 1, "LB": 5, "UB": 1})
+    fletcbv3 = import_problem("FLETCBV3", sifParams={"N": 10, "KAPPA": 0.0})
+    modbeale = import_problem("MODBEALE", sifParams={"N/2": 1, "ALPHA": 50.0})
+    broyndbdls = import_problem("BROYDNBDLS", sifParams={"N": 10, "KAPPA1": 2.0, "KAPPA2": 5.0, "KAPPA3": 1.0, "LB": 5, "UB": 1})
     sparsqur = import_problem("SPARSQUR", sifParams={"N": 10})
     #    curly30 = import_problem('CURLY30', sifParams={'N': 100})
     #    vandanmsls = import_problem('VANDANMSLS', sifParams={'KNOTS': 20}) # means N=22
-    hilberta = import_problem("HILBERTA", sifParams={"N": 2, "D": 0})
+    hilberta = import_problem("HILBERTA", sifParams={"N": 2, "D": 0.0})
     dixmaanf = import_problem("DIXMAANF", sifParams={"M": 5})  # N=15
     #    eigencls = import_problem('EIGENCLS', sifParams={'M': 2}) # N=30
     chainwoo = import_problem("CHAINWOO", sifParams={"NS": 1})
@@ -94,7 +94,7 @@ def make_pyCUTEst_problem_list():
     errinros = import_problem("ERRINROS", sifParams={"N": 10})
     strtchdv = import_problem("STRTCHDV", sifParams={"N": 10})
     #    yatp1cls = import_problem('YATP1CLS', sifParams={'N': 10})# n=120
-    mancino = import_problem("MANCINO", sifParams={"N": 10, "ALPHA": 5, "BETA": 14, "GAMMA": 3})
+    mancino = import_problem("MANCINO", sifParams={"N": 10, "ALPHA": 5, "BETA": 14.0, "GAMMA": 3})
     dixon3dq = import_problem("DIXON3DQ", sifParams={"N": 10})
     dixmaano = import_problem("DIXMAANO", sifParams={"M": 5})  # N=15
 
@@ -116,7 +116,7 @@ def make_pyCUTEst_problem_list():
     sbrybnd = import_problem("SBRYBND", sifParams={"N": 10})
     dixmaang = import_problem("DIXMAANG", sifParams={"M": 5})  # N=15
     noncvxu2 = import_problem("NONCVXU2", sifParams={"N": 10})
-    fletcbv2 = import_problem("FLETCBV2", sifParams={"N": 10, "KAPPA": 1})
+    fletcbv2 = import_problem("FLETCBV2", sifParams={"N": 10, "KAPPA": 1.0})
     eigenals = import_problem("EIGENALS", sifParams={"N": 2})
     #    liarwhd = import_problem('LIARWHD', sifParams={'N': 36}) # N=36
     broydn7d = import_problem("BROYDN7D", sifParams={"N/2": 5})
@@ -124,11 +124,11 @@ def make_pyCUTEst_problem_list():
 
     print("Done importing second block")
 
-    broydn3dls = import_problem("BROYDN3DLS", sifParams={"N": 10, "KAPPA1": 2, "KAPPA2": 1})
+    broydn3dls = import_problem("BROYDN3DLS", sifParams={"N": 10, "KAPPA1": 2.0, "KAPPA2": 1.0})
     #    scurly20 = import_problem('SCURLY20', sifParams={'N': 10}) # causes error???
     #    quartc = import_problem('QUARTC', sifParams={'N': 25}) # N=25
     dixmaanm1 = import_problem("DIXMAANM1", sifParams={"M": 5})  # N=15
-    fletbv3m = import_problem("FLETBV3M", sifParams={"N": 10, "KAPPA": 1})
+    fletbv3m = import_problem("FLETBV3M", sifParams={"N": 10, "KAPPA": 1.0})
     kssls = import_problem("KSSLS", sifParams={"N": 4})
     box = import_problem("BOX", sifParams={"N": 10})
     #    luksan17ls = import_problem('LUKSAN17LS')  # This problem doesn't have adjustable parameters
@@ -145,8 +145,8 @@ def make_pyCUTEst_problem_list():
 
     print("Done importing third block")
 
-    brybnd = import_problem("BRYBND", sifParams={"N": 10, "KAPPA1": 2, "KAPPA2": 5, "KAPPA3": 1, "LB": 5, "UB": 1})
-    oscipath = import_problem("OSCIPATH", sifParams={"N": 2, "RHO": 1})
+    brybnd = import_problem("BRYBND", sifParams={"N": 10, "KAPPA1": 2.0, "KAPPA2": 5.0, "KAPPA3": 1.0, "LB": 5, "UB": 1})
+    oscipath = import_problem("OSCIPATH", sifParams={"N": 2, "RHO": 1.0})
     vardim = import_problem("VARDIM", sifParams={"N": 10})
     tointgss = import_problem("TOINTGSS", sifParams={"N": 10})
     #    bdqrtic = import_problem('BDQRTIC', sifParams={'N': 100})
@@ -176,17 +176,17 @@ def make_pyCUTEst_problem_list():
     #    luksan15ls = import_problem('LUKSAN15LS')
     #    cycloocfls = import_problem('CYCLOOCFLS', sifParams={'P': 8}) # N=20
     schmvet = import_problem("SCHMVETT", sifParams={"N": 3})
-    oscigrad = import_problem("OSCIGRAD", sifParams={"N": 2, "RHO": 1})
+    oscigrad = import_problem("OSCIGRAD", sifParams={"N": 2, "RHO": 1.0})
     extrosnb = import_problem("EXTROSNB", sifParams={"N": 5})
     #    qing = import_problem('QING', sifParams={'N': 100})
     #    nondquar = import_problem('NONDQUAR', sifParams={'N': 100})
-    hilbertb = import_problem("HILBERTB", sifParams={"N": 5, "D": 5})
+    hilbertb = import_problem("HILBERTB", sifParams={"N": 5, "D": 5.0})
     dixmaanb = import_problem("DIXMAANB", sifParams={"M": 5})  # N=15
 
     print("Done importing fourth block")
 
     boxpower = import_problem("BOXPOWER", sifParams={"N": 10})
-    fletchbv = import_problem("FLETCHBV", sifParams={"N": 10, "KAPPA": 1})
+    fletchbv = import_problem("FLETCHBV", sifParams={"N": 10, "KAPPA": 1.0})
     dixmaanl = import_problem("DIXMAANL", sifParams={"M": 5})  # N=15
     #    arwhead = import_problem('ARWHEAD', sifParams={'N': 100})
     nondia = import_problem("NONDIA", sifParams={"N": 10})
