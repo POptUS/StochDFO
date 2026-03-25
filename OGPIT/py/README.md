@@ -13,4 +13,5 @@ Contents
 * ``local_benchPy_BOtorch_bendfo.py`` - Run OGPIT with BoTorch and Turbo on benchmark 2.
 * ``make_pyCUTEst_problem_list.py`` - List the test problems in the CUTEst problem set.
 * ``make_data_profs.py`` - postprocessing of benchmark results.
-* ``plot_data_profile.py`` - postprocessing of benchmark results.
+   - Users should manually alter settings in the file to specify which benchmarks to visualize.
+* ``plot_data_profile.py`` - general code used by `make_data_profs.py``
