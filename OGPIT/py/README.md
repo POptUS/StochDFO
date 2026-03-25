@@ -20,4 +20,4 @@ Contents
 * ``make_data_profs.py`` - Postprocessing of benchmark results.
    - Users should manually alter settings in the file to specify which benchmarks to visualize.
 * ``plot_data_profile.py`` - General code used by ``make_data_profs.py``.
-* ``make_pyCUTEst_problem_list.py`` - General code used by ``OGPIT_hetGPy_cutest.py`` to genereate the CUTEst test problem set.
+* ``make_pyCUTEst_problem_list.py`` - General code used by ``OGPIT_hetGPy_cutest.py`` to generate the CUTEst test problem set.
