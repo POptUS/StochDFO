@@ -35,15 +35,12 @@ import sys
 import time
 import warnings
 from dataclasses import dataclass
-from math import cos, exp, pi, sqrt
+from math import sqrt
 from pathlib import Path
 
 import cma
 import gpytorch
-import hetgpy as hgp
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 
 ## Based on https://botorch.org/docs/tutorials/turbo_1/
 import torch
@@ -53,15 +50,12 @@ from botorch.fit import fit_gpytorch_mll
 from botorch.generation import MaxPosteriorSampling
 from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
-from botorch.test_functions import Ackley
-from botorch.utils.transforms import unnormalize
 from gpytorch.constraints import Interval
 from gpytorch.kernels import MaternKernel, ScaleKernel
 from gpytorch.likelihoods import GaussianLikelihood
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from mpi4py import MPI
-from scipy import optimize, spatial
-from scipy.interpolate import interp1d, make_interp_spline
+from scipy import optimize
 from torch.quasirandom import SobolEngine
 
 warnings.filterwarnings("ignore", category=BadInitialCandidatesWarning)

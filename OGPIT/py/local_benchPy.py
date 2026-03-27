@@ -30,16 +30,12 @@ from __future__ import division
 
 import os
 import random
-import sys
 import time
-from math import cos, exp, pi, sqrt
+from math import sqrt
 
-import hetgpy as hgp
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 from mpi4py import MPI
-from scipy.interpolate import interp1d, make_interp_spline
+from scipy.interpolate import interp1d
 
 from OGPIT_hetGPy import OGPIT
 

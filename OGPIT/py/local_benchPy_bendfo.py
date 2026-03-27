@@ -32,16 +32,13 @@ import os
 import random
 import sys
 import time
-from math import cos, exp, pi, sqrt
+from math import sqrt
 
 import cma
-import hetgpy as hgp
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 from mpi4py import MPI
-from scipy import optimize, spatial
-from scipy.interpolate import interp1d, make_interp_spline
+from scipy import optimize
+from scipy.interpolate import interp1d
 
 test_cma = False
 test_cman = False
