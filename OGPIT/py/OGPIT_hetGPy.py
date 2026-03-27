@@ -28,7 +28,6 @@ SOFTWARE.
 
 from __future__ import division
 
-import sys
 from math import cos, exp, pi, sqrt
 
 import hetgpy as hgp
@@ -44,10 +43,7 @@ from hetgpy.optim import crit_EI, crit_logEI
 from hetgpy.qEI import qEI_cpp
 from hetgpy.utils import duplicated
 from pyDOE import lhs as lhspy
-from scipy import optimize, spatial
 from scipy.linalg.lapack import dtrtri
-from scipy.sparse import csr_matrix, lil_matrix
-from scipy.stats import multivariate_normal
 
 # import os
 # os.environ['R_HOME'] = '/usr/bin/R'
