@@ -28,30 +28,26 @@ SOFTWARE.
 
 from __future__ import division
 
-import sys, os
+import math
+import os
+import random
+import sys
+import time
+import warnings
+from dataclasses import dataclass
 from math import cos, exp, pi, sqrt
+from pathlib import Path
 
+import cma
+import gpytorch
 import hetgpy as hgp
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
-import random
-import time
-
-from pathlib import Path
-from mpi4py import MPI
-
-from scipy.interpolate import make_interp_spline, interp1d
-from scipy import optimize, spatial
-import cma
-
-import math
-import warnings
-from dataclasses import dataclass
 
 ## Based on https://botorch.org/docs/tutorials/turbo_1/
 import torch
-from botorch.acquisition import qExpectedImprovement, qLogExpectedImprovement, qNoisyExpectedImprovement, qLogNoisyExpectedImprovement
+from botorch.acquisition import qExpectedImprovement, qLogExpectedImprovement, qLogNoisyExpectedImprovement, qNoisyExpectedImprovement
 from botorch.exceptions import BadInitialCandidatesWarning
 from botorch.fit import fit_gpytorch_mll
 from botorch.generation import MaxPosteriorSampling
@@ -59,14 +55,14 @@ from botorch.models import SingleTaskGP
 from botorch.optim import optimize_acqf
 from botorch.test_functions import Ackley
 from botorch.utils.transforms import unnormalize
-from torch.quasirandom import SobolEngine
-
-import gpytorch
 from gpytorch.constraints import Interval
 from gpytorch.kernels import MaternKernel, ScaleKernel
 from gpytorch.likelihoods import GaussianLikelihood
 from gpytorch.mlls import ExactMarginalLogLikelihood
-
+from mpi4py import MPI
+from scipy import optimize, spatial
+from scipy.interpolate import interp1d, make_interp_spline
+from torch.quasirandom import SobolEngine
 
 warnings.filterwarnings("ignore", category=BadInitialCandidatesWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)

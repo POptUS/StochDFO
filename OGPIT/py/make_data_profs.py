@@ -32,6 +32,7 @@ from pickletools import optimize
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 from plot_data_profile import plot_data_profile
 
 # Appendix

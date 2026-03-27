@@ -28,29 +28,30 @@ SOFTWARE.
 
 from __future__ import division
 
-import sys, os
+import os
+import random
+import sys
+import time
 from math import cos, exp, pi, sqrt
 
+import cma
 import hetgpy as hgp
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
-import random
-import time
-
 from mpi4py import MPI
-
-from scipy.interpolate import make_interp_spline, interp1d
 from scipy import optimize, spatial
-import cma
+from scipy.interpolate import interp1d, make_interp_spline
 
 test_cma = False
 test_cman = False
 
-from OGPIT_hetGPy import OGPIT
+from pathlib import Path
+
 from calfun import calfun
 from dfoxs import dfoxs
-from pathlib import Path
+
+from OGPIT_hetGPy import OGPIT
 
 
 def log_and_abort(msg):

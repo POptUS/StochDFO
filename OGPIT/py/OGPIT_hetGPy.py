@@ -35,14 +35,14 @@ import hetgpy as hgp
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
+from hetgpy.auto_bounds import auto_bounds
 from hetgpy.covariance_functions import cov_gen, euclidean_dist
 from hetgpy.find_reps import find_reps
 from hetgpy.IMSE import Wij, mi
 from hetgpy.LOO import LOO_preds
 from hetgpy.optim import crit_EI, crit_logEI
-from hetgpy.utils import duplicated
 from hetgpy.qEI import qEI_cpp
-from hetgpy.auto_bounds import auto_bounds
+from hetgpy.utils import duplicated
 from pyDOE import lhs as lhspy
 from scipy import optimize, spatial
 from scipy.linalg.lapack import dtrtri

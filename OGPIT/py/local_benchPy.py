@@ -28,21 +28,20 @@ SOFTWARE.
 
 from __future__ import division
 
-import sys, os
+import os
+import random
+import sys
+import time
 from math import cos, exp, pi, sqrt
 
 import hetgpy as hgp
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
-import random
-import time
-
 from mpi4py import MPI
+from scipy.interpolate import interp1d, make_interp_spline
 
 from OGPIT_hetGPy import OGPIT
-
-from scipy.interpolate import make_interp_spline, interp1d
 
 
 # Standard branin
