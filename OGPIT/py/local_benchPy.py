@@ -31,7 +31,7 @@ from __future__ import division
 import os
 import random
 import time
-from math import pi, cos, sqrt
+from math import cos, pi, sqrt
 
 import numpy as np
 from mpi4py import MPI
