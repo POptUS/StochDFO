@@ -136,7 +136,7 @@ def plot_data_profile(HIST, N, gate, optimality_type="value", legendstr=None):
     max_data = np.nanmax(T)
     T[np.isnan(T)] = 2 * max_data
     T = np.sort(T, axis=0)
-    plt.figure(figsize=(6,5))
+    plt.figure(figsize=(6, 5))
     # For each solver, plot stair graphs with markers.
     hl = [None] * ns
     for s in range(ns):

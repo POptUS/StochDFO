@@ -155,22 +155,23 @@ def tot_rep_thres(model, xnew, threshold, x=None, curvar=None, rounding=True):
         if curvar is None:
             sn2xnew = cnxnew - knxnew @ model["Ki"] @ knxnew.T
         else:
-            sn2xnew = curvar/model["nu_hat"]
-        nr = new_lambda / (sn2xnew/threshold - sn2xnew)
+            sn2xnew = curvar / model["nu_hat"]
+        nr = new_lambda / (sn2xnew / threshold - sn2xnew)
     else:
         knx = cov_gen(X1=x, X2=model["X0"], theta=model["theta"], type=model["covtype"])
         kxxnew = cov_gen(X1=xnew, X2=x, theta=model["theta"], type=model["covtype"])
         sn2xxnew = kxxnew - knxnew @ model["Ki"] @ knx.T
         sn2xnew = cnxnew - knxnew @ model["Ki"] @ knxnew.T
         sn2x = 1 - knx @ model["Ki"] @ knx.T
-        if sn2xxnew^2/(sn2x * sn2xnew) < threshold:
+        if sn2xxnew ^ 2 / (sn2x * sn2xnew) < threshold:
             nr = np.inf
         else:
-            nr = new_lambda / (sn2xxnew^2/(threshold*sn2x) - sn2xnew)
+            nr = new_lambda / (sn2xxnew ^ 2 / (threshold * sn2x) - sn2xnew)
     nr.reshape(1)
     if rounding:
         nr = np.ceil(nr)
     return np.maximum(nr, 1)
+
 
 #' Deprecated version
 #' Compute the minimal number of replicates to reach a given total relative variance reduction
@@ -204,6 +205,7 @@ def tot_rep_thres_v0(model, xnew, threshold, maxrep, x=None, curvar=None):
             a = np.round((a + b) / 2)
 
     return b
+
 
 #' Update existing hetGP list with new observations
 #' Seems to work in place by modifying the Xlist object
@@ -243,6 +245,7 @@ def add_reps(Xlist, xnew, znew, ik=None):
 #             Xlist["Z0"][i] = np.mean(Xlist["Zlist"][i])
 #     # Else: do nothing (cannot have fractionnal mult)
 #     Xlist["Z"] = np.concatenate([Xlist["Zlist"].get(k) for k in np.arange(Xlist["X0"].shape[0])], axis=0)
+
 
 #' Reduce X and Z to multiples of ns observations (remaining groups of less than ns observations are discarded)
 #' @noRd
@@ -307,14 +310,14 @@ def local_acq_search(model, lowerTR, upperTR, method="EI", ncand=None, xc=None, 
     cst = np.min(ptmp["mean"])
 
     if method == "costRI":
-        def neg_crit_qRI_rep(xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, preds = None, method = "fast", penalty = -100, digits = 6):
-            return(-crit_qRI_rep(xnew = xnew, xc=xc, xmin=xmin, model=model, maxrep=maxrep, c0 = c0, c1 = c1, cst = cst,
-                                 preds = preds, method = method, penalty = penalty, digits = digits))
+
+        def neg_crit_qRI_rep(xnew, xc, xmin, model, maxrep, c0=0, c1=0, cst=None, preds=None, method="fast", penalty=-100, digits=6):
+            return -crit_qRI_rep(xnew=xnew, xc=xc, xmin=xmin, model=model, maxrep=maxrep, c0=c0, c1=c1, cst=cst, preds=preds, method=method, penalty=penalty, digits=digits)
+
         res_g = optimize.differential_evolution(
             func=neg_crit_qRI_rep,
             args=(xc, xmin, model, maxrep, c0, c1, cst),
-            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))),
-                                           np.concatenate((upperTR, upperTR, maxrep*np.ones(2))))],
+            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))), np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
             maxiter=40,
             popsize=15,
         )
@@ -323,25 +326,24 @@ def local_acq_search(model, lowerTR, upperTR, method="EI", ncand=None, xc=None, 
             x0=res_g["x"],
             fun=neg_crit_qRI_rep,
             args=(xc, xmin, model, maxrep, c0, c1, cst),
-            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))),
-                                           np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
+            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))), np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
             method="L-BFGS-B",
         )
         nr = np.maximum(res["x"][[2 * d, 2 * d + 1]], 0)
         xnews = np.reshape(res["x"][np.arange(res["x"].shape[0] - 2)], (2, d))
-        xnew = xnews[np.argmax(nr),:]
+        xnew = xnews[np.argmax(nr), :]
         nr = np.max(nr)
         return dict(par=xnew, value=-res["fun"], nr=nr)
 
     if method == "costRI2":
-        def neg_crit_qRI_rep2(xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, preds = None, method = "fast", penalty = -100, digits = 6):
-            return(-crit_qRI_rep2(xnew = xnew, xc=xc, xmin=xmin, model=model, maxrep=maxrep, c0 = c0, c1 = c1, cst = cst,
-                                 preds = preds, method = method, penalty = penalty, digits = digits))
+
+        def neg_crit_qRI_rep2(xnew, xc, xmin, model, maxrep, c0=0, c1=0, cst=None, preds=None, method="fast", penalty=-100, digits=6):
+            return -crit_qRI_rep2(xnew=xnew, xc=xc, xmin=xmin, model=model, maxrep=maxrep, c0=c0, c1=c1, cst=cst, preds=preds, method=method, penalty=penalty, digits=digits)
+
         res_g = optimize.differential_evolution(
             func=neg_crit_qRI_rep2,
             args=(xc, xmin, model, maxrep, c0, c1, cst),
-            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))),
-                                           np.concatenate((upperTR, upperTR, maxrep*np.ones(2))))],
+            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))), np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
             maxiter=40,
             popsize=50,
         )
@@ -350,13 +352,12 @@ def local_acq_search(model, lowerTR, upperTR, method="EI", ncand=None, xc=None, 
             x0=res_g["x"],
             fun=neg_crit_qRI_rep2,
             args=(xc, xmin, model, maxrep, c0, c1, cst),
-            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))),
-                                           np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
+            bounds=[(l, u) for l, u in zip(np.concatenate((lowerTR, lowerTR, np.zeros(2))), np.concatenate((upperTR, upperTR, maxrep * np.ones(2))))],
             method="L-BFGS-B",
         )
         nr = np.maximum(res["x"][[2 * d, 2 * d + 1]], 0)
         xnews = np.reshape(res["x"][np.arange(res["x"].shape[0] - 2)], (2, d))
-        xnew = xnews[np.argmax(nr),:]
+        xnew = xnews[np.argmax(nr), :]
         nr = np.max(nr)
         return dict(par=xnew, value=-res["fun"], nr=nr)
 
@@ -406,10 +407,8 @@ def local_acq_search(model, lowerTR, upperTR, method="EI", ncand=None, xc=None, 
         # xmin = model["X0"][np.argmin(ptmp["mean"]),:]
         # cst = np.min(ptmp["mean"])
 
-        def neg_crit_qRIauto(x, xc, xmin, model, maxrep, cst = None, threshold = 0.05, type = "totrep",
-                  preds = None, method = "fast", digits = 6, returnnr = True):
-            return -crit_qRI_auto(xnew=x, xc=xc, xmin=xmin, model=model, maxrep=maxrep, cst = cst, threshold = threshold, type = type,
-                  preds = preds, method = method, digits = digits, returnnr = returnnr)
+        def neg_crit_qRIauto(x, xc, xmin, model, maxrep, cst=None, threshold=0.05, type="totrep", preds=None, method="fast", digits=6, returnnr=True):
+            return -crit_qRI_auto(xnew=x, xc=xc, xmin=xmin, model=model, maxrep=maxrep, cst=cst, threshold=threshold, type=type, preds=preds, method=method, digits=digits, returnnr=returnnr)
 
         res = optimize.minimize(
             x0=par,
@@ -418,7 +417,7 @@ def local_acq_search(model, lowerTR, upperTR, method="EI", ncand=None, xc=None, 
             bounds=[(l, u) for l, u in zip(lowerTR, upperTR)],
             method="L-BFGS-B",
         )
-        critval = crit_qRI_auto(res["x"], xc=xc, xmin=xmin,maxrep=maxrep,cst=cst, model=model,threshold=threshold,type=mtype)
+        critval = crit_qRI_auto(res["x"], xc=xc, xmin=xmin, maxrep=maxrep, cst=cst, model=model, threshold=threshold, type=mtype)
         nr = critval[1]
         value = critval[0]
 
@@ -490,7 +489,7 @@ def OGPIT(
     imsevar=10,
     speed=True,
     bootns=25,
-    maxcost=np.inf
+    maxcost=np.inf,
 ):
     """Trust region with Gaussian processes in the noisy case
 
@@ -541,7 +540,7 @@ def OGPIT(
     if ninit is None:
         ninit = np.maximum(10, 2 * d)
     if minnn is None:
-        minnn = np.round(4 * (d + 1) * d / (3*d + 1)) # Harmonic mean between d+1 and 2xd
+        minnn = np.round(4 * (d + 1) * d / (3 * d + 1))  # Harmonic mean between d+1 and 2xd
     if maxnn is None:
         maxnn = np.maximum(200, 10 * d)
     if mindelta is None:
@@ -627,7 +626,7 @@ def OGPIT(
     outxnews = np.empty(shape=(0, d))  # Store new design center values
     evalits = np.zeros(1)  # Store the number of evaluations at each iteration
     xc = np.zeros(d)  # Center of the TR in the coordinates used by the GP (i.e., in [-1, 1]^d)
-    suc = True # Was the previous step successful?
+    suc = True  # Was the previous step successful?
     ns = 1
     increasens = False
     settings = dict(trace=trace)
@@ -647,7 +646,7 @@ def OGPIT(
             ik = np.flatnonzero((xk == Xlist["X0"]).all(1))
             if np.size(ik) == 0:
                 ik = Xlist["X0"].shape[0]
-                xk = Xlist["X0"][ik,:]
+                xk = Xlist["X0"][ik, :]
 
             if ns == 1:
                 Zall = Z
@@ -658,7 +657,7 @@ def OGPIT(
 
         # Find nns nearest neighbors to the center
         ndists = np.max(np.abs(Xlist["X0"] - xk), axis=1)
-        nntmp = min(maxnn, Xlist["X0"].shape[0], max(np.sum(ndists <= delta + np.minimum(np.maximum(eps, delta/1e4), np.sqrt(eps))), 2))  # Take all points in the TR, and some outside if needed
+        nntmp = min(maxnn, Xlist["X0"].shape[0], max(np.sum(ndists <= delta + np.minimum(np.maximum(eps, delta / 1e4), np.sqrt(eps))), 2))  # Take all points in the TR, and some outside if needed
         nns = np.argsort(ndists)[np.arange(nntmp)]
 
         # Extract NN points and rescale (around the TR center)
@@ -674,7 +673,7 @@ def OGPIT(
         upperTR = (np.minimum(xk + delta, Upp) - xk) / delta
 
         # Number of points in the TR
-        iin = np.array(np.where(np.max(np.abs(Xks), axis=1) <= 1 + np.minimum(np.maximum(eps, delta/1e4), np.sqrt(eps)))).flatten()
+        iin = np.array(np.where(np.max(np.abs(Xks), axis=1) <= 1 + np.minimum(np.maximum(eps, delta / 1e4), np.sqrt(eps)))).flatten()
         nin = len(iin)
         if trace > 0:
             print("Number of designs in the TR:", nin)
@@ -706,19 +705,18 @@ def OGPIT(
                     maxthetatmp = autothetas["upper"]
 
         # Avoid relearning the hyperparameters at every iteration when there is already sufficient data
-        if speed and not suc and nin > 5*d and ((nin < 50 and nin % 3 != 0) or (nin < 100 and nin % 5 != 0) or (nin >= 100 and nin % 10 != 0)):
-            knownparams = dict(theta=model["theta"], beta0 = beta0, g = model["g"])
+        if speed and not suc and nin > 5 * d and ((nin < 50 and nin % 3 != 0) or (nin < 100 and nin % 5 != 0) or (nin >= 100 and nin % 10 != 0)):
+            knownparams = dict(theta=model["theta"], beta0=beta0, g=model["g"])
         else:
             knownparams = dict(beta0=beta0, g=gdeter)
             if suc:
                 init = dict()
                 settings = dict(trace=trace)
             else:
-                init = dict(theta=model["theta"], g = model["g"])
-                settings = dict(trace = trace, factr = 1e8)
+                init = dict(theta=model["theta"], g=model["g"])
+                settings = dict(trace=trace, factr=1e8)
 
-        noiseControl = dict(g_bounds=[sqrt(eps), np.maximum(100, np.minimum(1e5, np.var(
-            np.concatenate([Xlist["Zlist"].get(k) for k in nns], axis=0)) / np.var(Xlist["Z0"][nns])))])
+        noiseControl = dict(g_bounds=[sqrt(eps), np.maximum(100, np.minimum(1e5, np.var(np.concatenate([Xlist["Zlist"].get(k) for k in nns], axis=0)) / np.var(Xlist["Z0"][nns])))])
 
         model = mleFun()
         model.mle(
@@ -760,7 +758,7 @@ def OGPIT(
             nreppois = np.ones(npois, dtype="int")
             if nin > 2:  # Model is not relevant with too few designs
                 for i in range(npois):
-                    nreppois[i] = np.minimum(maxrep, tot_rep_thres(xnew=np.atleast_2d(Xpois[i, :]), model=model, threshold=vredthrestot)[0,0])
+                    nreppois[i] = np.minimum(maxrep, tot_rep_thres(xnew=np.atleast_2d(Xpois[i, :]), model=model, threshold=vredthrestot)[0, 0])
 
             if n + sum(nreppois) * ns - ns > nfmax:
                 nreppois = np.ones(npois, dtype="int")
@@ -792,8 +790,7 @@ def OGPIT(
             continue
 
         # Next point selection
-        afopt = local_acq_search(model=model, lowerTR=lowerTR, upperTR=upperTR, xc=xc, ncand=ncand, method=acqtype, maxrep=maxrep,
-                                 threshold=vredthrestot, c0=c0, c1=c1)
+        afopt = local_acq_search(model=model, lowerTR=lowerTR, upperTR=upperTR, xc=xc, ncand=ncand, method=acqtype, maxrep=maxrep, threshold=vredthrestot, c0=c0, c1=c1)
         if acqtype in ("qRIauto", "costRI") and trace > 0:
             print("nr:", afopt["nr"])
 
@@ -812,16 +809,13 @@ def OGPIT(
 
         # Replication at xnew
         # Future variance should not be relvarxnew times larger than the one at the center.
-        vrednew = np.maximum(vredthrestot,
-                             (ploo_sk["sd2"] - model.predict(x=np.atleast_2d(xc))["sd2"] * relvarxnew) / np.maximum(
-                                 ploo_sk["sd2"], eps))
+        vrednew = np.maximum(vredthrestot, (ploo_sk["sd2"] - model.predict(x=np.atleast_2d(xc))["sd2"] * relvarxnew) / np.maximum(ploo_sk["sd2"], eps))
 
         if afopt["nr"] is None:
             nnewrep = tot_rep_thres(xnew=np.atleast_2d(sk), model=model, threshold=vrednew[0], curvar=ploo_sk["sd2"])
         else:
             nnewrep = afopt["nr"]
-            nnewrep = np.maximum(nnewrep, tot_rep_thres(xnew=np.atleast_2d(sk), model=model, threshold=vrednew[0],
-                                    curvar=ploo_sk["sd2"]))
+            nnewrep = np.maximum(nnewrep, tot_rep_thres(xnew=np.atleast_2d(sk), model=model, threshold=vrednew[0], curvar=ploo_sk["sd2"]))
 
         nnewrep = int(np.maximum(1, np.min(np.array([nnewrep[0] * ns, maxrep * ns, nfmax - int(n)], dtype="object")) / ns))
 
@@ -937,7 +931,21 @@ def OGPIT(
     if lightreturn:
         return dict(par=xk * (Upp - Low) + Low, value=zk, X=X * (Upp - Low) + Low, Z=Z)
     else:
-        return dict(par=xk * (Upp - Low) + Low, value=zk, X=X * (Upp - Low) + Low, Z=Z, Xlist=Xlist, evalits=evalits, nevals=n, Xks=outxks * (Upp - Low) + Low, Xnews=outxnews * (Upp - Low) + Low, delta=delta, ipar=ik, Xall=Xall * (Upp - Low) + Low, Zall=Zall)
+        return dict(
+            par=xk * (Upp - Low) + Low,
+            value=zk,
+            X=X * (Upp - Low) + Low,
+            Z=Z,
+            Xlist=Xlist,
+            evalits=evalits,
+            nevals=n,
+            Xks=outxks * (Upp - Low) + Low,
+            Xnews=outxnews * (Upp - Low) + Low,
+            delta=delta,
+            ipar=ik,
+            Xall=Xall * (Upp - Low) + Low,
+            Zall=Zall,
+        )
 
 
 #' Function going smoothly from 0 to 1 on [xmin, xmax], with zero gradient at 0 and xlim.
@@ -1168,6 +1176,7 @@ def crit_qRIt(x, xnew, model, cst=None, nr=None, preds=None, method="fast", fast
 
     return np.maximum(0, ei - ci)
 
+
 #' Allows to allocate reps without integer constraints
 #' @param maxrep maximum number of replicates to be allocated
 #' @param c0,c1 fixed costs for evaluating a new evaluation point and for each replicate
@@ -1176,21 +1185,21 @@ def crit_qRIt(x, xnew, model, cst=None, nr=None, preds=None, method="fast", fast
 #' @param penalty value used to penalize replication budgets larger than maxrep and lower than 1
 #' @param digits how many digits to keep for rounding, default to 6
 #' @export
-def crit_qRI_rep (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, preds = None, method = "fast", penalty = -100, digits = 6):
+def crit_qRI_rep(xnew, xc, xmin, model, maxrep, c0=0, c1=0, cst=None, preds=None, method="fast", penalty=-100, digits=6):
     d = model["X0"].shape[1]
     pen = 0
     if len(xnew.shape) == 1:
         nr = np.maximum(xnew[[2 * d, 2 * d + 1]], 0)
-        xnew = np.reshape(xnew[np.arange(xnew.shape[0] - 2)], (2,d))
+        xnew = np.reshape(xnew[np.arange(xnew.shape[0] - 2)], (2, d))
     else:
-        nr = np.max(0, xnew[:,d+1])
+        nr = np.max(0, xnew[:, d + 1])
 
     if np.max(nr) < 1:
         pen = penalty * (1 - np.max(nr))
 
     ids = np.where(nr == 0)
     if np.size(ids) > 0:
-        xnew = xnew[np.where(nr > 0)[0],:]
+        xnew = xnew[np.where(nr > 0)[0], :]
         nr = nr[np.where(nr > 0)[0]]
 
     if np.size(nr) == 0:
@@ -1200,23 +1209,22 @@ def crit_qRI_rep (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, pre
         pen = penalty * (np.sum(nr) - maxrep)
 
     if np.max(nr) >= 1:
-        crit = crit_qRIt(x = np.round(np.vstack((xnew, xc, xmin)), decimals = digits),
-                         xnew = np.round(xnew, decimals = digits),
-                         cst = cst, model = model, nr = nr, preds = preds, method = method)
+        crit = crit_qRIt(x=np.round(np.vstack((xnew, xc, xmin)), decimals=digits), xnew=np.round(xnew, decimals=digits), cst=cst, model=model, nr=nr, preds=preds, method=method)
     else:
         return pen
 
-  # if(is(crit, "try-error")){
-  #   print(xnew)
-  #   print(nr)
-  #   kkk <- crit_qRIt(x = round(rbind(xnew, xc, xmin), digits = digits), xnew = round(xnew, digits = digits), cst = cst, model = model, nr = nr, preds = preds, method = method)
-  #   stop()
-  # }
+    # if(is(crit, "try-error")){
+    #   print(xnew)
+    #   print(nr)
+    #   kkk <- crit_qRIt(x = round(rbind(xnew, xc, xmin), digits = digits), xnew = round(xnew, digits = digits), cst = cst, model = model, nr = nr, preds = preds, method = method)
+    #   stop()
+    # }
     if c0 + c1 > 0:
         costs = c0 * sum(nr > 0) + c1 * (sum(nr))
     else:
         costs = 1
-    return crit/costs + pen
+    return crit / costs + pen
+
 
 #' Allows to allocate reps without integer constraints - force min(nr) > 1
 #' @param maxrep maximum number of replicates to be allocated
@@ -1225,14 +1233,14 @@ def crit_qRI_rep (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, pre
 #' @param xc,xmin TR center and minimum point
 #' @param penalty value used to penalize replication budgets larger than maxrep and lower than 1
 #' @param digits how many digits to keep for rounding, default to 6
-def crit_qRI_rep2 (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, preds = None, method = "fast", penalty = -100, digits = 6):
+def crit_qRI_rep2(xnew, xc, xmin, model, maxrep, c0=0, c1=0, cst=None, preds=None, method="fast", penalty=-100, digits=6):
     d = model["X0"].shape[1]
     pen = 0
     if len(xnew.shape) == 1:
         nr = np.maximum(xnew[[2 * d, 2 * d + 1]], 0)
-        xnew = np.reshape(xnew[np.arange(xnew.shape[0] - 2)], (2,d))
+        xnew = np.reshape(xnew[np.arange(xnew.shape[0] - 2)], (2, d))
     else:
-        nr = np.max(0, xnew[:,d+1])
+        nr = np.max(0, xnew[:, d + 1])
 
     if np.max(nr) < 1:
         pen = penalty * (1 - np.max(nr))
@@ -1241,7 +1249,7 @@ def crit_qRI_rep2 (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, pr
 
     ids = np.where(nr == 0)
     if np.size(ids) > 0:
-        xnew = xnew[np.where(nr > 0)[0],:]
+        xnew = xnew[np.where(nr > 0)[0], :]
         nr = nr[np.where(nr > 0)[0]]
 
     if np.size(nr) == 0:
@@ -1251,23 +1259,22 @@ def crit_qRI_rep2 (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, pr
         pen = penalty * (np.sum(nr) - maxrep)
 
     if np.max(nr) >= 1:
-        crit = crit_qRIt(x = np.round(np.vstack((xnew, xc, xmin)), decimals = digits),
-                         xnew = np.round(xnew, decimals = digits),
-                         cst = cst, model = model, nr = nr, preds = preds, method = method)
+        crit = crit_qRIt(x=np.round(np.vstack((xnew, xc, xmin)), decimals=digits), xnew=np.round(xnew, decimals=digits), cst=cst, model=model, nr=nr, preds=preds, method=method)
     else:
         return pen
 
-  # if(is(crit, "try-error")){
-  #   print(xnew)
-  #   print(nr)
-  #   kkk <- crit_qRIt(x = round(rbind(xnew, xc, xmin), digits = digits), xnew = round(xnew, digits = digits), cst = cst, model = model, nr = nr, preds = preds, method = method)
-  #   stop()
-  # }
+    # if(is(crit, "try-error")){
+    #   print(xnew)
+    #   print(nr)
+    #   kkk <- crit_qRIt(x = round(rbind(xnew, xc, xmin), digits = digits), xnew = round(xnew, digits = digits), cst = cst, model = model, nr = nr, preds = preds, method = method)
+    #   stop()
+    # }
     if c0 + c1 > 0:
         costs = c0 * sum(nr > 0) + c1 * (sum(nr))
     else:
         costs = 1
-    return crit/costs + pen
+    return crit / costs + pen
+
 
 #' @title qRI for one new point (several targets) with auto number of reps
 #' This version automatically selects the number of new replicates: compared to the maximum qRI value, it stops when adding one new replicate does not bring more than threshold times maxqRI
@@ -1280,21 +1287,18 @@ def crit_qRI_rep2 (xnew, xc, xmin, model, maxrep, c0 = 0, c1 = 0, cst = None, pr
 #' @param type either totrep for totrepthreshold or consrep for consrepthreshold
 #' @importFrom stats cov2cor
 #' @export
-def crit_qRI_auto(xnew, xc, xmin, model, maxrep, cst = None, threshold = 0.05, type = "totrep",
-                  preds = None, method = "fast", digits = 6, returnnr = True):
+def crit_qRI_auto(xnew, xc, xmin, model, maxrep, cst=None, threshold=0.05, type="totrep", preds=None, method="fast", digits=6, returnnr=True):
     if cst is None:
         cst = np.min(model.predict(x=model["X0"])["mean"])
     if len(xnew.shape) == 1:
         xnew = xnew.reshape(-1, model.X0.shape[1])
 
     if type == "consrep":
-        nr = min(maxrep, max(1, cons_rep_thres(xnew = xnew, model = model, threshold = 0.01, maxrep = maxrep)))
+        nr = min(maxrep, max(1, cons_rep_thres(xnew=xnew, model=model, threshold=0.01, maxrep=maxrep)))
     else:
-        nr = min(maxrep, max(1, tot_rep_thres(xnew = xnew, model = model, threshold = threshold)))
+        nr = min(maxrep, max(1, tot_rep_thres(xnew=xnew, model=model, threshold=threshold)))
 
-    val = crit_qRIt(x = np.round(np.vstack((xnew, xc, xmin)), decimals = digits),
-                    xnew = np.round(xnew, decimals = digits), cst = cst, model = model,
-                    nr = nr, preds = preds, method = method)
+    val = crit_qRIt(x=np.round(np.vstack((xnew, xc, xmin)), decimals=digits), xnew=np.round(xnew, decimals=digits), cst=cst, model=model, nr=nr, preds=preds, method=method)
     if returnnr:
         return np.array((val, nr))
     else:
@@ -1549,7 +1553,23 @@ def STOGPIT(
                 Zinit = model["Z0"][ids]
 
             tropt = OGPIT(
-                func_sc, Low=Low, Upp=Upp, nfmax=np.minimum(nfmax - n, localbudget), delta=localdelta, maxdelta=maxdelta, mindelta=mindelta, maxrep=maxrep, boots=boots, maxnn=maxnn, modtype=modtype, Xinit=Xinit, Zinit=Zinit, trace=traceogpit, lightreturn=False, deter=deter, acqtype=localcrit
+                func_sc,
+                Low=Low,
+                Upp=Upp,
+                nfmax=np.minimum(nfmax - n, localbudget),
+                delta=localdelta,
+                maxdelta=maxdelta,
+                mindelta=mindelta,
+                maxrep=maxrep,
+                boots=boots,
+                maxnn=maxnn,
+                modtype=modtype,
+                Xinit=Xinit,
+                Zinit=Zinit,
+                trace=traceogpit,
+                lightreturn=False,
+                deter=deter,
+                acqtype=localcrit,
             )
 
             if xstarsloc is None:
@@ -1676,7 +1696,7 @@ if __name__ == "__main__":
 
     globalopt = False  # Local or global opt bench?
 
-    acqtype = "EI" # "costRI" # "qRIauto", "EI"
+    acqtype = "EI"  # "costRI" # "qRIauto", "EI"
 
     if acqtype == "costRI" or acqtype == "costRI2":
         c0 = 1
@@ -1749,7 +1769,7 @@ if __name__ == "__main__":
                 lightreturn=False,
                 acqtype=acqtype,
                 c0=c0,
-                c1=c1
+                c1=c1,
             )
 
             print("(Local opt) Minimum for noise=%f is declared at: " % noise, res["par"], "Predicted value:", res["value"], " Value: ", functruename(res["par"]), "Budget: ", res["nevals"])

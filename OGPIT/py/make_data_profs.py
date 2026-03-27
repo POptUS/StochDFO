@@ -69,44 +69,42 @@ naive = False
 if bendfo:
     # Original bendfo problems features
     dims = np.array([9, 9, 7, 7, 7, 7, 2, 2, 3, 3, 4, 4, 2, 2, 3, 3, 4, 3, 6, 6, 9, 9, 12, 12, 3, 2, 4, 4, 6, 7, 8, 9, 10, 11, 10, 5, 11, 11, 8, 10, 11, 12, 5, 6, 8, 5, 5, 8, 10, 12, 12, 8, 8])
-    opt_Problems = np.arange(0,dims.shape[0])
+    opt_Problems = np.arange(0, dims.shape[0])
     nrep = 30
     noises = np.atleast_1d(np.array((0.0, 0.001, 0.10, 10)))  # Noise std
 else:
-    opt_Problems =  [1,2,3,4,5,6,7,8,9] # [1,2,3,4,5,6,7,8,9]
-    dims = np.array([2,4,6,2,4,6,2,2,4]) # [2,4,6,2,4,6,2,2,4]
-    nrep = 30 # 40
+    opt_Problems = [1, 2, 3, 4, 5, 6, 7, 8, 9]  # [1,2,3,4,5,6,7,8,9]
+    dims = np.array([2, 4, 6, 2, 4, 6, 2, 2, 4])  # [2,4,6,2,4,6,2,2,4]
+    nrep = 30  # 40
     noises = np.atleast_1d(np.array((0.0, 0.001, 0.010, 0.100)))  # Noise std
 
 
-budgets = (1e4*(dims + 1)).astype('int')  #5e4 # 1e5 #1e5 #500000 #100000
+budgets = (1e4 * (dims + 1)).astype("int")  # 5e4 # 1e5 #1e5 #500000 #100000
 
 
 showfig = False
 # results_directory = '/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results/'    #'./benchmark_results/'
-results_directory = '/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/sens_results/'    #'./benchmark_results/'
+results_directory = "/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/sens_results/"  #'./benchmark_results/'
 if bendfo:
-    py_results_directory = '/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_bendfo/'
+    py_results_directory = "/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_bendfo/"
 else:
-    py_results_directory = '/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_py/' #  # '/user/mbinois/home/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_py/'
+    py_results_directory = "/home/mbinois/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_py/"  #  # '/user/mbinois/home/Documents/GitProjects/bacasable/Misc/KSP/python/benchmark_results_py/'
 
-num_total_probs = len(opt_Problems)*nrep #*len(noises)
+num_total_probs = len(opt_Problems) * nrep  # *len(noises)
 
 for nois in noises:
     N = np.zeros(num_total_probs)
     FHIST = np.inf * np.ones((np.max(budgets), num_total_probs, len(solvers)))
-    for solver_num,s in enumerate(solvers):
+    for solver_num, s in enumerate(solvers):
         p_count = -1
         for prob_num in opt_Problems:
             if bendfo and (solvers[solver_num] == "pydefault" or solvers[solver_num] == "cma" or solvers[solver_num] == "cman" or solvers[solver_num] == "turbo" or solvers[solver_num] == "botorch"):
                 budget = budgets[prob_num]
             else:
-                budget = budgets[prob_num-1]
-            xpstmp = np.sort(np.concatenate((np.linspace(10, 90, 9),
-                                             np.linspace(100, 1000, 10),
-                                             np.linspace(0, budget, 201)))).astype(int)
+                budget = budgets[prob_num - 1]
+            xpstmp = np.sort(np.concatenate((np.linspace(10, 90, 9), np.linspace(100, 1000, 10), np.linspace(0, budget, 201)))).astype(int)
             xpstmp[0] = 1
-            for rep in np.arange(nrep)+1:
+            for rep in np.arange(nrep) + 1:
                 if bendfo and (prob_num == 17 or 22 <= prob_num <= 25 or 32 <= prob_num <= 37 or 39 <= prob_num <= 41 or 48 <= prob_num <= 50):
                     continue
                 p_count += 1
@@ -156,31 +154,31 @@ for nois in noises:
                         Fvals[np.arange(Results["naiveregret"].shape[0])] = Results["naiveregret"]
                     else:
                         tmp = Results["regretatxps"]
-                        if np.isnan(tmp[0]): # for cma, somehow the first value is nan
+                        if np.isnan(tmp[0]):  # for cma, somehow the first value is nan
                             tmp[0] = tmp[1]
                         Fvals[xpstmp[np.arange(len(tmp))] - 1] = tmp
 
                 else:
                     outfilename1 = f"{solvers[solver_num]}_probname={prob_num}_nfmax={budget}_noise={tmpnois}_seed={rep}_regret_and_naiveregret.npy"
                     Results = np.load(results_directory + outfilename1, allow_pickle=True).item()
-                    Fvals = np.inf*np.ones((budget))
+                    Fvals = np.inf * np.ones((budget))
                     if naive:
                         Fvals[np.arange(Results["naiveregret"].shape[0])] = Results["naiveregret"]
                     else:
-                        Fvals[np.array(Results["xps"]).astype(int)-1] = Results["regretatxps"]
+                        Fvals[np.array(Results["xps"]).astype(int) - 1] = Results["regretatxps"]
 
                 if solver_num == 0:
                     if bendfo:
                         n = dims[prob_num]
                     else:
-                        n = dims[prob_num -1] #Results['X'].shape[1]
+                        n = dims[prob_num - 1]  # Results['X'].shape[1]
                     N[p_count] = n + 1
 
                 FHIST[0 : len(Fvals), p_count, solver_num] = Fvals
 
     if bendfo:
         if p_count + 1 < num_total_probs:
-            FHIST = FHIST[:, np.arange(p_count + 1),:]
+            FHIST = FHIST[:, np.arange(p_count + 1), :]
             N = N[np.arange(p_count + 1)]
         # Eventually to filter some problems
         # ids = np.where(FHIST[0,:,0] < 1e4)
@@ -189,12 +187,12 @@ for nois in noises:
 
     ngate = 7
     # plt.rcParams['figure.figsize'] = [5, 4]
-    plt.rcParams.update({'font.size': 16})
-    for gate in np.array([1e-6, 1e-3, 1e-1]): #np.logspace(-ngate, -1, 4):
+    plt.rcParams.update({"font.size": 16})
+    for gate in np.array([1e-6, 1e-3, 1e-1]):  # np.logspace(-ngate, -1, 4):
         plot_data_profile(FHIST, N, gate, optimality_type="value", legendstr=solverscap)
         plt.title(f"gate = {gate:1.1e}, noise {nois}")
         plt.xlabel("Number of Function Evaluations / (d+1)")  # overwrite xlabel
-        #plt.tight_layout()
+        # plt.tight_layout()
         plt.savefig(f"perf_prof_gate={gate:1.1e}_noise_{nois}.png", dpi=300)
         if showfig:
             plt.show()
@@ -206,7 +204,7 @@ for nois in noises:
             for i in range(1, FHIST.shape[0]):
                 FHIST[i, :, j] = np.minimum(FHIST[i, :, j], FHIST[i - 1, :, j])
         if bendfo:
-            fig, axs = plt.subplots(6, 6, figsize=(20,20),sharey=True)
+            fig, axs = plt.subplots(6, 6, figsize=(20, 20), sharey=True)
             nbf = 6
         else:
             fig, axs = plt.subplots(3, 3, figsize=(10, 10), sharey=True)
@@ -214,21 +212,21 @@ for nois in noises:
         fig.suptitle(f"progress_noise={nois}")
         for i in np.arange(FHIST.shape[1]):
             if i % nrep == 0:
-                pbnum = i//nrep
+                pbnum = i // nrep
                 color = iter(plt.cm.rainbow(np.linspace(0, 1, FHIST.shape[2])))
-                curm = np.min(FHIST[:,np.arange(i, i+nrep),:])
+                curm = np.min(FHIST[:, np.arange(i, i + nrep), :])
                 if not naive:
-                    curm=0
-                tmp = np.median(FHIST[:,np.arange(i, i+nrep),:], axis=1)
+                    curm = 0
+                tmp = np.median(FHIST[:, np.arange(i, i + nrep), :], axis=1)
                 tmp2 = np.min(FHIST[:, np.arange(i, i + nrep), :], axis=1)
                 tmp3 = np.max(FHIST[:, np.arange(i, i + nrep), :], axis=1)
                 for j in np.arange(FHIST.shape[2]):
                     c = next(color)
-                    axs[pbnum//nbf, pbnum%nbf].plot(np.log10(tmp[:,j] - curm + 1e-15), c=c, label=solvers[j])
-                    axs[pbnum//nbf, pbnum%nbf].plot(np.log10(tmp2[:,j] - curm + 1e-15),"--", c=c)
-                    axs[pbnum//nbf, pbnum%nbf].plot(np.log10(tmp3[:, j] - curm + 1e-15), "--", c=c)
-                axs[pbnum//nbf, pbnum%nbf].legend()
-                axs[pbnum//nbf, pbnum%nbf].set_title("Problem" + str(i//nrep))
+                    axs[pbnum // nbf, pbnum % nbf].plot(np.log10(tmp[:, j] - curm + 1e-15), c=c, label=solvers[j])
+                    axs[pbnum // nbf, pbnum % nbf].plot(np.log10(tmp2[:, j] - curm + 1e-15), "--", c=c)
+                    axs[pbnum // nbf, pbnum % nbf].plot(np.log10(tmp3[:, j] - curm + 1e-15), "--", c=c)
+                axs[pbnum // nbf, pbnum % nbf].legend()
+                axs[pbnum // nbf, pbnum % nbf].set_title("Problem" + str(i // nrep))
         plt.tight_layout()
         if showfig:
             plt.show(block=True)

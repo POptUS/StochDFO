@@ -41,7 +41,7 @@ import time
 from pathlib import Path
 from mpi4py import MPI
 
-from scipy.interpolate import make_interp_spline,interp1d
+from scipy.interpolate import make_interp_spline, interp1d
 from scipy import optimize, spatial
 import cma
 
@@ -80,7 +80,7 @@ test_botorch = False
 test_logEI = False
 
 # maxtime = 3600 # Stop after 1h of running time
-maxtime = 600 # Stop after 1h of running time
+maxtime = 600  # Stop after 1h of running time
 
 # from OGPIT_hetGPy import OGPIT3
 from calfun import calfun
@@ -102,9 +102,7 @@ class TurboState:
     restart_triggered: bool = False
 
     def __post_init__(self):
-        self.failure_tolerance = math.ceil(
-            max([4.0 / self.batch_size, float(self.dim) / self.batch_size])
-        )
+        self.failure_tolerance = math.ceil(max([4.0 / self.batch_size, float(self.dim) / self.batch_size]))
 
 
 def update_state(state, Y_next):
@@ -127,10 +125,12 @@ def update_state(state, Y_next):
         state.restart_triggered = True
     return state
 
+
 def get_initial_points(dim, n_pts, seed=0):
     sobol = SobolEngine(dimension=dim, scramble=True, seed=seed)
     X_init = sobol.draw(n=n_pts).to(dtype=dtype, device=device)
     return X_init
+
 
 def generate_batch(
     state,
@@ -200,9 +200,7 @@ def log_and_abort(msg):
 if __name__ == "__main__":
     # Setup use of BenDFO clone based on user-provided path
     if "BENDFO_PATH" not in os.environ:
-        log_and_abort(
-            "Please set the BENDFO_PATH environment variable to root of a BenDFO clone"
-        )
+        log_and_abort("Please set the BENDFO_PATH environment variable to root of a BenDFO clone")
     BENDFO_PATH = Path(os.environ["BENDFO_PATH"]).resolve()
     BENDFO_PY_PATH = BENDFO_PATH.joinpath("py")
     BENDFO_DFO_DAT = BENDFO_PATH.joinpath("data", "dfo.dat")
@@ -224,10 +222,10 @@ if __name__ == "__main__":
 
     factor = 10
     probs = np.loadtxt(BENDFO_DFO_DAT)
-    probtype = 'smooth'
+    probtype = "smooth"
     nreps = 30
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
-    
+
     gammam = 0.8
     gammap = 0.5
     beta = 1e-3
@@ -259,7 +257,7 @@ if __name__ == "__main__":
         if d > 9 or nprob == 10 or nprob == 12 or nprob == 13 or nprob == 17:
             continue
 
-        budget = int(1e4*(d+1))  #5e4 # 1e5 #1e5 #500000 #100000
+        budget = int(1e4 * (d + 1))  # 5e4 # 1e5 #1e5 #500000 #100000
         ninit = max(10, 2 * d)
 
         nn = 5 * d
@@ -270,7 +268,6 @@ if __name__ == "__main__":
 
         lower = -5000 * np.ones(d)  # 1-by-n Vector of lower bounds [zeros(1,n)]
         upper = 5000 * np.ones(d)  # 1-by-n Vector of upper bounds [ones(1,n)]
-
 
         def fn0(y):
             out = calfun(y, m, int(nprob), "smooth", 0, num_outs=2)[0]
@@ -283,14 +280,14 @@ if __name__ == "__main__":
             bounds=[(l, u) for l, u in zip(lower, upper)],
         )
 
-        xoptref, esref = cma.fmin2(fn0, X_0, delta, {'bounds': [lower, upper], 'verbose':-9})
-        cmf = dict(esref.result._asdict())['fbest']
+        xoptref, esref = cma.fmin2(fn0, X_0, delta, {"bounds": [lower, upper], "verbose": -9})
+        cmf = dict(esref.result._asdict())["fbest"]
 
         # print(bendfo_row)
         # print(X_0)
 
-        if res_ref['fun'] < cmf:
-            fstar = res_ref['fun']
+        if res_ref["fun"] < cmf:
+            fstar = res_ref["fun"]
             # print(res_ref['x'])
         else:
             fstar = cmf
@@ -300,7 +297,7 @@ if __name__ == "__main__":
         # print("")
 
         for rep in range(nreps):
-            for ii,nois in enumerate(noises):
+            for ii, nois in enumerate(noises):
                 prob_count += 1
 
                 if prob_count % size != rank:
@@ -308,16 +305,14 @@ if __name__ == "__main__":
 
                 if nois == 0:
                     deter = True
-                    budget0 = int(1e3*(d+1)) # Less budget if deterministic
+                    budget0 = int(1e3 * (d + 1))  # Less budget if deterministic
                     upnoise = 1e-3
                 else:
                     deter = False
                     budget0 = budget
                     upnoise = 1e2
 
-                xps = np.sort(np.concatenate((np.linspace(10, 90, 9),
-                                              np.linspace(100, 1000, 10),
-                                              np.linspace(0, budget0, 201))))
+                xps = np.sort(np.concatenate((np.linspace(10, 90, 9), np.linspace(100, 1000, 10), np.linspace(0, budget0, 201))))
                 xps[0] = 1
 
                 random.seed(int(rep))
@@ -333,14 +328,14 @@ if __name__ == "__main__":
                     continue
 
                 def objective(y, ns=1):
-                        # It is possible to have python use the same objective values via
-                        # octave. This can be slow on some systems. To (for example)
-                        # test difference between matlab and python, used the following
-                        # line and add "from oct2py import octave" on a system with octave
-                        # installed.
-                        # out = octave.feval("calfun_wrapper", y, m, nprob, "smooth", [], 1, 1)
+                    # It is possible to have python use the same objective values via
+                    # octave. This can be slow on some systems. To (for example)
+                    # test difference between matlab and python, used the following
+                    # line and add "from oct2py import octave" on a system with octave
+                    # installed.
+                    # out = octave.feval("calfun_wrapper", y, m, nprob, "smooth", [], 1, 1)
                     out = calfun(y, m, nprob, "smooth", 0, num_outs=2)[0]
-                        # assert len(out) == m, "Incorrect output dimension"
+                    # assert len(out) == m, "Incorrect output dimension"
 
                     out = out + np.random.normal(loc=0, scale=nois / sqrt(ns))
                     return np.squeeze(out)
@@ -349,9 +344,8 @@ if __name__ == "__main__":
                     out = calfun(y, m, int(nprob), "smooth", 0, num_outs=2)[0]
                     return np.squeeze(out)
 
-
                 starttime = time.time()
-                Xinit = (np.atleast_2d(X_0) - lower) /(upper - lower)
+                Xinit = (np.atleast_2d(X_0) - lower) / (upper - lower)
                 Zinit = np.ones(1) * objective(X_0)
 
                 if test_Turbo:
@@ -385,10 +379,8 @@ if __name__ == "__main__":
                         return -res
 
                     X_turbo = get_initial_points(d, n_init)
-                    X_turbo[0,:] = torch.from_numpy((X_0 - lower) /(upper - lower))
-                    Y_turbo = torch.tensor(
-                        [eval_objective2(x) for x in X_turbo], dtype=dtype, device=device
-                    ).unsqueeze(-1)
+                    X_turbo[0, :] = torch.from_numpy((X_0 - lower) / (upper - lower))
+                    Y_turbo = torch.tensor([eval_objective2(x) for x in X_turbo], dtype=dtype, device=device).unsqueeze(-1)
 
                     state = TurboState(d, batch_size=batch_size, best_value=max(Y_turbo).item())
 
@@ -404,14 +396,8 @@ if __name__ == "__main__":
                             # Fit a GP model
                             train_Y = (Y_turbo - Y_turbo.mean()) / Y_turbo.std()
                             likelihood = GaussianLikelihood(noise_constraint=Interval(1e-8, upnoise))
-                            covar_module = ScaleKernel(  # Use the same lengthscale prior as in the TuRBO paper
-                                MaternKernel(
-                                    nu=2.5, ard_num_dims=d, lengthscale_constraint=Interval(0.005, 4.0)
-                                )
-                            )
-                            model = SingleTaskGP(
-                                X_turbo, train_Y, covar_module=covar_module, likelihood=likelihood
-                            )
+                            covar_module = ScaleKernel(MaternKernel(nu=2.5, ard_num_dims=d, lengthscale_constraint=Interval(0.005, 4.0)))  # Use the same lengthscale prior as in the TuRBO paper
+                            model = SingleTaskGP(X_turbo, train_Y, covar_module=covar_module, likelihood=likelihood)
                             mll = ExactMarginalLogLikelihood(model.likelihood, model)
 
                             # Do the fitting and acquisition function optimization inside the Cholesky context
@@ -432,9 +418,7 @@ if __name__ == "__main__":
                                     acqf="ts",
                                 )
 
-                            Y_next = torch.tensor(
-                                [eval_objective2(x) for x in X_next], dtype=dtype, device=device
-                            ).unsqueeze(-1)
+                            Y_next = torch.tensor([eval_objective2(x) for x in X_next], dtype=dtype, device=device).unsqueeze(-1)
 
                             # Update state
                             # oldbest = state.best_value
@@ -445,14 +429,12 @@ if __name__ == "__main__":
                             Y_turbo = torch.cat((Y_turbo, Y_next), dim=0)
 
                             # Print current status
-                            print(
-                                f"{len(X_turbo)}) Best value: {state.best_value:.2e}, TR length: {state.length:.2e}"
-                            )
+                            print(f"{len(X_turbo)}) Best value: {state.best_value:.2e}, TR length: {state.length:.2e}")
                             # if oldbest == state.best_value:
                             #     print("tot")
                         except:
-                            keepgo=False
-                    res = dict(Xall=X_turbo.numpy()*(upper - lower) + lower, evalits=np.arange(0, X_turbo.shape[0]) + 1)
+                            keepgo = False
+                    res = dict(Xall=X_turbo.numpy() * (upper - lower) + lower, evalits=np.arange(0, X_turbo.shape[0]) + 1)
 
                 if test_botorch:
                     batch_size = 1
@@ -468,10 +450,8 @@ if __name__ == "__main__":
                         return -res
 
                     X_ei = get_initial_points(d, n_init)
-                    X_ei[0, :] = torch.from_numpy((X_0 - lower) /(upper - lower))
-                    Y_ei = torch.tensor(
-                        [eval_objective2(x) for x in X_ei], dtype=dtype, device=device
-                    ).unsqueeze(-1)
+                    X_ei[0, :] = torch.from_numpy((X_0 - lower) / (upper - lower))
+                    Y_ei = torch.tensor([eval_objective2(x) for x in X_ei], dtype=dtype, device=device).unsqueeze(-1)
 
                     NUM_RESTARTS = 10 if not SMOKE_TEST else 2
                     RAW_SAMPLES = 512 if not SMOKE_TEST else 4
@@ -508,9 +488,7 @@ if __name__ == "__main__":
                                 raw_samples=RAW_SAMPLES,
                             )
 
-                            Y_next = torch.tensor(
-                                [eval_objective2(x) for x in candidate], dtype=dtype, device=device
-                            ).unsqueeze(-1)
+                            Y_next = torch.tensor([eval_objective2(x) for x in candidate], dtype=dtype, device=device).unsqueeze(-1)
 
                             # Append data
                             X_ei = torch.cat((X_ei, candidate), axis=0)
@@ -522,9 +500,9 @@ if __name__ == "__main__":
                             # if oldbest == state.best_value:
                             #     print("tot")
                         except:
-                            keepgo=False
+                            keepgo = False
 
-                    res = dict(Xall=X_ei.numpy()*(upper - lower) + lower,  evalits=np.arange(0, X_ei.shape[0]) + 1)
+                    res = dict(Xall=X_ei.numpy() * (upper - lower) + lower, evalits=np.arange(0, X_ei.shape[0]) + 1)
 
                 if test_logEI:
                     batch_size = 1
@@ -540,10 +518,8 @@ if __name__ == "__main__":
                         return -res
 
                     X_ei = get_initial_points(d, n_init)
-                    X_ei[0, :] = torch.from_numpy((X_0 - lower) /(upper - lower))
-                    Y_ei = torch.tensor(
-                        [eval_objective2(x) for x in X_ei], dtype=dtype, device=device
-                    ).unsqueeze(-1)
+                    X_ei[0, :] = torch.from_numpy((X_0 - lower) / (upper - lower))
+                    Y_ei = torch.tensor([eval_objective2(x) for x in X_ei], dtype=dtype, device=device).unsqueeze(-1)
 
                     NUM_RESTARTS = 10 if not SMOKE_TEST else 2
                     RAW_SAMPLES = 512 if not SMOKE_TEST else 4
@@ -580,9 +556,7 @@ if __name__ == "__main__":
                                 raw_samples=RAW_SAMPLES,
                             )
 
-                            Y_next = torch.tensor(
-                                [eval_objective2(x) for x in candidate], dtype=dtype, device=device
-                            ).unsqueeze(-1)
+                            Y_next = torch.tensor([eval_objective2(x) for x in candidate], dtype=dtype, device=device).unsqueeze(-1)
 
                             # Append data
                             X_ei = torch.cat((X_ei, candidate), axis=0)
@@ -596,7 +570,7 @@ if __name__ == "__main__":
                         except:
                             keepgo = False
 
-                    res = dict(Xall=X_ei.numpy() * (upper - lower) + lower,  evalits=np.arange(0, X_ei.shape[0]) + 1)
+                    res = dict(Xall=X_ei.numpy() * (upper - lower) + lower, evalits=np.arange(0, X_ei.shape[0]) + 1)
 
                 # elif test_cman:
                 #     allXs = np.copy(X_0)
@@ -617,19 +591,16 @@ if __name__ == "__main__":
                 runtime = time.time() - starttime
 
                 # Check initial point is present
-                if not all(res['Xall'][0] == X_0):
-                    print("Problem with using initial point: X0=", X_0, "while Xall[0,:]=",res['Xall'][0])
+                if not all(res["Xall"][0] == X_0):
+                    print("Problem with using initial point: X0=", X_0, "while Xall[0,:]=", res["Xall"][0])
 
                 # Naive regret: compute regret at evaluated points
-                naiveregret = np.ones(min(res["Xall"].shape[0],int(budget0)))
+                naiveregret = np.ones(min(res["Xall"].shape[0], int(budget0)))
                 for j in np.arange(naiveregret.size):
-                    naiveregret[j] = fn(res["Xall"][j,:]) # - np.min(fstar)
+                    naiveregret[j] = fn(res["Xall"][j, :])  # - np.min(fstar)
 
                 regret = naiveregret - np.min(fstar)
 
-                regretatxps = regret[xps[xps < naiveregret.size].astype("int")-1]
+                regretatxps = regret[xps[xps < naiveregret.size].astype("int") - 1]
 
-                np.save("./benchmark_results/" + outfilename1, {'regret': regret, 'regretatxps': regretatxps,
-                                                                    'naiveregret': naiveregret, 'evalits':res['evalits'], 'time':runtime}) #'X': res['X']})
-
-
+                np.save("./benchmark_results/" + outfilename1, {"regret": regret, "regretatxps": regretatxps, "naiveregret": naiveregret, "evalits": res["evalits"], "time": runtime})  #'X': res['X']})

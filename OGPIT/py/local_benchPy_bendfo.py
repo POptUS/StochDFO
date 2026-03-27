@@ -40,7 +40,7 @@ import time
 
 from mpi4py import MPI
 
-from scipy.interpolate import make_interp_spline,interp1d
+from scipy.interpolate import make_interp_spline, interp1d
 from scipy import optimize, spatial
 import cma
 
@@ -52,6 +52,7 @@ from calfun import calfun
 from dfoxs import dfoxs
 from pathlib import Path
 
+
 def log_and_abort(msg):
     print()
     print(msg)
@@ -62,9 +63,7 @@ def log_and_abort(msg):
 if __name__ == "__main__":
     # Setup use of BenDFO clone based on user-provided path
     if "BENDFO_PATH" not in os.environ:
-        log_and_abort(
-            "Please set the BENDFO_PATH environment variable to root of a BenDFO clone"
-        )
+        log_and_abort("Please set the BENDFO_PATH environment variable to root of a BenDFO clone")
     BENDFO_PATH = Path(os.environ["BENDFO_PATH"]).resolve()
     BENDFO_PY_PATH = BENDFO_PATH.joinpath("py")
     BENDFO_DFO_DAT = BENDFO_PATH.joinpath("data", "dfo.dat")
@@ -86,10 +85,10 @@ if __name__ == "__main__":
 
     factor = 10
     probs = np.loadtxt(BENDFO_DFO_DAT)
-    probtype = 'smooth'
-    nreps = 30 
+    probtype = "smooth"
+    nreps = 30
     noises = np.array((0, 0.001, 0.1, 10))  # Noise std
-    
+
     gammam = 0.8
     beta = 1e-3
     eta1 = 0.2
@@ -120,7 +119,7 @@ if __name__ == "__main__":
         if d > 9 or nprob == 10 or nprob == 12 or nprob == 13 or nprob == 17:
             continue
 
-        budget = int(1e4*(d+1))  #5e4 # 1e5 #1e5 #500000 #100000
+        budget = int(1e4 * (d + 1))  # 5e4 # 1e5 #1e5 #500000 #100000
         ninit = max(10, 2 * d)
 
         nn = 5 * d
@@ -131,7 +130,6 @@ if __name__ == "__main__":
 
         lower = -5000 * np.ones(d)  # 1-by-n Vector of lower bounds [zeros(1,n)]
         upper = 5000 * np.ones(d)  # 1-by-n Vector of upper bounds [ones(1,n)]
-
 
         def fn0(y):
             out = calfun(y, m, int(nprob), "smooth", 0, num_outs=2)[0]
@@ -144,14 +142,14 @@ if __name__ == "__main__":
             bounds=[(l, u) for l, u in zip(lower, upper)],
         )
 
-        xoptref, esref = cma.fmin2(fn0, X_0, delta, {'bounds': [lower, upper], 'verbose':-9})
-        cmf = dict(esref.result._asdict())['fbest']
+        xoptref, esref = cma.fmin2(fn0, X_0, delta, {"bounds": [lower, upper], "verbose": -9})
+        cmf = dict(esref.result._asdict())["fbest"]
 
         # print(bendfo_row)
         # print(X_0)
 
-        if res_ref['fun'] < cmf:
-            fstar = res_ref['fun']
+        if res_ref["fun"] < cmf:
+            fstar = res_ref["fun"]
             # print(res_ref['x'])
         else:
             fstar = cmf
@@ -161,7 +159,7 @@ if __name__ == "__main__":
         # print("")
 
         for rep in range(nreps):
-            for ii,nois in enumerate(noises):
+            for ii, nois in enumerate(noises):
                 prob_count += 1
 
                 if prob_count % size != rank:
@@ -169,14 +167,12 @@ if __name__ == "__main__":
 
                 if nois == 0:
                     deter = True
-                    budget0 = int(1e3*(d+1)) # Less budget if deterministic
+                    budget0 = int(1e3 * (d + 1))  # Less budget if deterministic
                 else:
                     deter = False
                     budget0 = budget
 
-                xps = np.sort(np.concatenate((np.linspace(10, 90, 9),
-                                              np.linspace(100, 1000, 10),
-                                              np.linspace(0, budget0, 201))))
+                xps = np.sort(np.concatenate((np.linspace(10, 90, 9), np.linspace(100, 1000, 10), np.linspace(0, budget0, 201))))
                 xps[0] = 1
 
                 random.seed(int(rep))
@@ -192,14 +188,14 @@ if __name__ == "__main__":
                     continue
 
                 def objective(y, ns=1):
-                        # It is possible to have python use the same objective values via
-                        # octave. This can be slow on some systems. To (for example)
-                        # test difference between matlab and python, used the following
-                        # line and add "from oct2py import octave" on a system with octave
-                        # installed.
-                        # out = octave.feval("calfun_wrapper", y, m, nprob, "smooth", [], 1, 1)
+                    # It is possible to have python use the same objective values via
+                    # octave. This can be slow on some systems. To (for example)
+                    # test difference between matlab and python, used the following
+                    # line and add "from oct2py import octave" on a system with octave
+                    # installed.
+                    # out = octave.feval("calfun_wrapper", y, m, nprob, "smooth", [], 1, 1)
                     out = calfun(y, m, nprob, "smooth", 0, num_outs=2)[0]
-                        # assert len(out) == m, "Incorrect output dimension"
+                    # assert len(out) == m, "Incorrect output dimension"
 
                     out = out + np.random.normal(loc=0, scale=nois / sqrt(ns))
                     return np.squeeze(out)
@@ -208,64 +204,87 @@ if __name__ == "__main__":
                     out = calfun(y, m, int(nprob), "smooth", 0, num_outs=2)[0]
                     return np.squeeze(out)
 
-
                 starttime = time.time()
-                Xinit = (np.atleast_2d(X_0) - lower) /(upper - lower)
+                Xinit = (np.atleast_2d(X_0) - lower) / (upper - lower)
                 Zinit = np.ones(1) * objective(X_0)
                 if test_cma:
                     allXs = np.copy(X_0)
+
                     def objective2(y, ns=1):
                         global allXs
                         allXs = np.vstack((allXs, y))
                         return objective(y, ns)
 
-                    xopt, es =cma.fmin2(objective2, X_0, delta, {'bounds': [lower, upper], 'maxfevals': budget0},noise_handler=False)
+                    xopt, es = cma.fmin2(objective2, X_0, delta, {"bounds": [lower, upper], "maxfevals": budget0}, noise_handler=False)
                     # compute centers for Xks
-                    psize = int(4 + np.floor(3*np.log(d)))
+                    psize = int(4 + np.floor(3 * np.log(d)))
                     allXks = np.zeros([int(np.floor(allXs.shape[0] / psize)), d])
                     for ii in np.arange(allXks.shape[0]):
-                        allXks[ii,:] = np.mean(allXs[np.arange(ii*psize+1,(ii+1)*psize+1),:], axis=0)
+                        allXks[ii, :] = np.mean(allXs[np.arange(ii * psize + 1, (ii + 1) * psize + 1), :], axis=0)
 
-                    res = dict(Xall= allXs, Xks= allXks, evalits= np.arange(1,allXks.shape[0]+1)*psize)
+                    res = dict(Xall=allXs, Xks=allXks, evalits=np.arange(1, allXks.shape[0] + 1) * psize)
                 elif test_cman:
                     allXs = np.copy(X_0)
+
                     def objective2(y, ns=1):
                         global allXs
                         allXs = np.vstack((allXs, y))
                         return objective(y, ns)
 
-                    xopt, es =cma.fmin2(objective2, X_0, delta, {'bounds': [lower, upper], 'maxfevals': budget0},noise_handler=True)
-                    res = dict(Xall= allXs, Xks= allXs, evalits= np.arange(0, allXs.shape[0])+1)
+                    xopt, es = cma.fmin2(objective2, X_0, delta, {"bounds": [lower, upper], "maxfevals": budget0}, noise_handler=True)
+                    res = dict(Xall=allXs, Xks=allXs, evalits=np.arange(0, allXs.shape[0]) + 1)
                 else:
-                    res = OGPIT(func=objective, Low=lower, Upp=upper, nfmax=budget0, delta=delta, mindelta=mindelta, maxnn=maxnn,
-                        maxdelta=maxdelta, ninit=ninit, trace=trace, mintheta=mintheta, maxtheta=maxtheta, acqtype=acq_type,
-                        vredthrestot=vredthrestot, maxrep=maxrep, beta=beta, eta1=eta1, deter=deter, normalize=True, imsevar = imsevar,
-                        gammam=gammam, lightreturn=lightreturn, minnn=minnn, modtype=model_type, boots=True, iso=iso,
-                        Xinit=Xinit,Zinit=Zinit)
+                    res = OGPIT(
+                        func=objective,
+                        Low=lower,
+                        Upp=upper,
+                        nfmax=budget0,
+                        delta=delta,
+                        mindelta=mindelta,
+                        maxnn=maxnn,
+                        maxdelta=maxdelta,
+                        ninit=ninit,
+                        trace=trace,
+                        mintheta=mintheta,
+                        maxtheta=maxtheta,
+                        acqtype=acq_type,
+                        vredthrestot=vredthrestot,
+                        maxrep=maxrep,
+                        beta=beta,
+                        eta1=eta1,
+                        deter=deter,
+                        normalize=True,
+                        imsevar=imsevar,
+                        gammam=gammam,
+                        lightreturn=lightreturn,
+                        minnn=minnn,
+                        modtype=model_type,
+                        boots=True,
+                        iso=iso,
+                        Xinit=Xinit,
+                        Zinit=Zinit,
+                    )
                 runtime = time.time() - starttime
 
                 # Check initial point is present
                 # if not all(res['Xall'][0] == X_0):
-                if np.linalg.norm(res['Xall'][0] - X_0) >= 1e-10:
+                if np.linalg.norm(res["Xall"][0] - X_0) >= 1e-10:
                     print(X_0)
-                    print(res['Xall'][0])
-                    print(res['Xall'][0] == X_0)
-                    print(np.linalg.norm(res['Xall'][0] - X_0))
+                    print(res["Xall"][0])
+                    print(res["Xall"][0] == X_0)
+                    print(np.linalg.norm(res["Xall"][0] - X_0))
                     sys.exit("Problem with using initial point" + outfilename1)
 
                 # Naive regret: compute regret at evaluated points
-                naiveregret = np.ones(min(res["Xall"].shape[0],int(budget0)))
+                naiveregret = np.ones(min(res["Xall"].shape[0], int(budget0)))
                 for j in np.arange(naiveregret.size):
-                    naiveregret[j] = fn(res["Xall"][j,:]) # - np.min(fstar)
+                    naiveregret[j] = fn(res["Xall"][j, :])  # - np.min(fstar)
 
                 regret = np.ones(res["Xks"].shape[0])
                 for j in np.arange(regret.size):
-                    regret[j] = fn(res["Xks"][j,:]) - np.min(fstar)
+                    regret[j] = fn(res["Xks"][j, :]) - np.min(fstar)
 
                 stpf = interp1d(res["evalits"], regret, kind="previous", fill_value="extrapolate")
                 regretatxps = stpf(xps)
 
-                np.save("./benchmark_results/" + outfilename1, {'regret': regret, 'regretatxps': regretatxps,
-                                                                    'naiveregret': naiveregret, 'evalits':res['evalits'], 'time':runtime}) #'X': res['X']})
-
-
+                np.save("./benchmark_results/" + outfilename1, {"regret": regret, "regretatxps": regretatxps, "naiveregret": naiveregret, "evalits": res["evalits"], "time": runtime})  #'X': res['X']})

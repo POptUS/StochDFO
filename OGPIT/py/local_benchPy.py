@@ -42,7 +42,8 @@ from mpi4py import MPI
 
 from OGPIT_hetGPy import OGPIT
 
-from scipy.interpolate import make_interp_spline,interp1d
+from scipy.interpolate import make_interp_spline, interp1d
+
 
 # Standard branin
 def branin(x):
@@ -59,21 +60,25 @@ def branin(x):
     f = a * (x[:, 1] - b * x[:, 0] ** 2 + c * x[:, 0] - d) ** 2 + e * (1 - f9) * cos(x[:, 0]) + e
     return f
 
+
 def jeffsfav(x):
     f = np.sum(x**2)
     return f
 
+
 def quarf(x):
     f = np.sum(x**4)
     return f
+
 
 # Rosenbrock 2d on [-1.5, 1.5]
 def rosen(x):
     xx = x * 3 - 1.5
     xi = xx[0]
     xnext = xx[1]
-    f = np.sum(100 * (xnext - xi ** 2) ** 2 + (xi - 1) ** 2)
+    f = np.sum(100 * (xnext - xi**2) ** 2 + (xi - 1) ** 2)
     return f
+
 
 # Normalized Rosenbrock 4d on [-1.5, 1.5]
 def rosen2(x):
@@ -82,14 +87,16 @@ def rosen2(x):
     x = 15 * x - 5
     x1 = x[0:2]
     x2 = x[1:3]
-    f = np.sum(100 * (x2 - x1 ** 2) ** 2 + (1 - x1) ** 2)
+    f = np.sum(100 * (x2 - x1**2) ** 2 + (1 - x1) ** 2)
     f = (f - m) / s
     return f
+
 
 def noisyfun(fun, x, noise, ns):
     f = fun(x)
     f = f + np.random.normal(loc=0, scale=noise / sqrt(ns))
     return f
+
 
 if __name__ == "__main__":
     if not os.path.exists("./benchmark_results"):
@@ -103,7 +110,7 @@ if __name__ == "__main__":
     print("Local bench", flush=True)
     # exp_name = "OGPIT_local_test_benchPy"
     # opt_Problems = np.arange(9) + 1
-    opt_Problems = [1,2,3,4,5,6,8,9]
+    opt_Problems = [1, 2, 3, 4, 5, 6, 8, 9]
 
     prob_count = 0
     for prob in opt_Problems:
@@ -111,61 +118,61 @@ if __name__ == "__main__":
 
         random.seed(int(prob))
 
-        nrep = 10 # 100
+        nrep = 10  # 100
         if prob == 1:
             d = 2
             fn = jeffsfav
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 2:
             d = 4
             fn = jeffsfav
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 3:
             d = 6
             fn = jeffsfav
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 4:
             d = 2
             fn = quarf
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 5:
             d = 4
             fn = quarf
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 6:
             d = 6
             fn = quarf
-            xstars = np.zeros([1,d])
-            fstar = 0.
+            xstars = np.zeros([1, d])
+            fstar = 0.0
             lower = -np.ones(d)
             upper = np.ones(d)
 
         if prob == 7:
             d = 2
             fn = branin
-            xstars = np.zeros([1,d])
-            xstars[0,0] = 0.9616520
-            xstars[0,1] = 0.15
+            xstars = np.zeros([1, d])
+            xstars[0, 0] = 0.9616520
+            xstars[0, 1] = 0.15
             fstar = branin(xstars)
             lower = np.zeros(d)
             upper = np.ones(d)
@@ -173,7 +180,7 @@ if __name__ == "__main__":
         if prob == 8:
             d = 2
             fn = rosen
-            xstars = (np.ones([1,d]) + 1.5)/3
+            xstars = (np.ones([1, d]) + 1.5) / 3
             fstar = 0
             lower = np.zeros(d)
             upper = np.ones(d)
@@ -182,7 +189,7 @@ if __name__ == "__main__":
             d = 4
             fn = rosen2
             fntrue = rosen2
-            xstars = 0.4 * np.ones([1,d])
+            xstars = 0.4 * np.ones([1, d])
             fstar = 0
             lower = np.zeros(d)
             upper = np.ones(d)
@@ -190,7 +197,7 @@ if __name__ == "__main__":
         # if prob % size != rank:
         #     continue
 
-        budget = int(1e4*(d+1))  #5e4 # 1e5 #1e5 #500000 #100000
+        budget = int(1e4 * (d + 1))  # 5e4 # 1e5 #1e5 #500000 #100000
         ninit = max(10, 2 * d)
 
         gammam = 0.8
@@ -224,19 +231,17 @@ if __name__ == "__main__":
         noises = np.array((0, 0.001, 0.01, 0.1))  # Noise std
 
         all_res = np.ones((noises.shape[0], nrep, 220))
-        nid = 0 # noise id
+        nid = 0  # noise id
         for nois in noises:
             print(nois)
 
             prob_count += 1
 
-            xps = np.sort(np.concatenate((np.linspace(10,90,9),
-                                          np.linspace(100,1000,10),
-                                          np.linspace(0,budget,201))))
+            xps = np.sort(np.concatenate((np.linspace(10, 90, 9), np.linspace(100, 1000, 10), np.linspace(0, budget, 201))))
             xps[0] = 1
             if nois == 0:
                 deter = True
-                budget0 = int(1e3*(d+1))
+                budget0 = int(1e3 * (d + 1))
             else:
                 deter = False
                 budget0 = budget
@@ -256,24 +261,48 @@ if __name__ == "__main__":
                 def func(x, ns=1):
                     global nois
                     global fn
-                    return noisyfun(fn, x, noise = nois, ns=ns)
+                    return noisyfun(fn, x, noise=nois, ns=ns)
 
                 starttime = time.time()
-                res = OGPIT(func=func, Low=lower, Upp=upper, nfmax=budget0, gammam=gammam, delta=delta, mindelta=mindelta, maxdelta=maxdelta,
-                            mintheta=mintheta, maxtheta=maxtheta, trace=trace, vredthrestot=vredthrestot, maxrep=maxrep, beta=beta, eta1=eta1,
-                            minnn=minnn, maxnn=maxnn, deter=deter, modtype=model_type, iso=iso, normalize=True, ninit=ninit, acqtype=acq_type,
-                            imsevar = imsevar, lightreturn=lightreturn, boots=True)
+                res = OGPIT(
+                    func=func,
+                    Low=lower,
+                    Upp=upper,
+                    nfmax=budget0,
+                    gammam=gammam,
+                    delta=delta,
+                    mindelta=mindelta,
+                    maxdelta=maxdelta,
+                    mintheta=mintheta,
+                    maxtheta=maxtheta,
+                    trace=trace,
+                    vredthrestot=vredthrestot,
+                    maxrep=maxrep,
+                    beta=beta,
+                    eta1=eta1,
+                    minnn=minnn,
+                    maxnn=maxnn,
+                    deter=deter,
+                    modtype=model_type,
+                    iso=iso,
+                    normalize=True,
+                    ninit=ninit,
+                    acqtype=acq_type,
+                    imsevar=imsevar,
+                    lightreturn=lightreturn,
+                    boots=True,
+                )
                 runtime = time.time() - starttime
 
                 # Naive regret: compute regret at evaluated points
-                naiveregret = np.ones(min(res["Xall"].shape[0],int(budget0)))
+                naiveregret = np.ones(min(res["Xall"].shape[0], int(budget0)))
                 for j in np.arange(naiveregret.size):
-                    naiveregret[j] = fn(res["Xall"][j,:]) - np.min(fstar)
+                    naiveregret[j] = fn(res["Xall"][j, :]) - np.min(fstar)
 
                 # Realistic regret: compute regret based on the current best estimate (i.e., the center at the considered iteration)
                 regret = np.ones(res["Xks"].shape[0])
                 for j in np.arange(regret.size):
-                    regret[j] = fn(res["Xks"][j,:]) - np.min(fstar)
+                    regret[j] = fn(res["Xks"][j, :]) - np.min(fstar)
 
                 stpf = interp1d(res["evalits"], regret, kind="previous", fill_value="extrapolate")
                 regretatxps = stpf(xps)
@@ -282,8 +311,7 @@ if __name__ == "__main__":
                 # plt.plot(xps, np.log10(regretatxps))
                 # plt.plot(np.arange(naiveregret.size)+1, np.log10(naiveregret))
                 # plt.show(block=True)
-                np.save("./benchmark_results/" + outfilename1, {'regret': regret, 'regretatxps': regretatxps,
-                                                                'naiveregret': naiveregret, 'evalits':res['evalits'], 'time':runtime}) #'X': res['X']})
+                np.save("./benchmark_results/" + outfilename1, {"regret": regret, "regretatxps": regretatxps, "naiveregret": naiveregret, "evalits": res["evalits"], "time": runtime})  #'X': res['X']})
             nid = nid + 1
 
     # Postprocessing
