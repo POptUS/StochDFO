@@ -26,17 +26,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import os
+import sys
 from math import sqrt
 
 import numpy as np
+
 from OGPIT_hetGPy import OGPIT
-import sys, os
 
 sys.path.append("/home/jmlarson/FES_SciDAC/SAD_code/test/")
 
-from make_pyCUTEst_problem_list import make_pyCUTEst_problem_list
-
 from mpi4py import MPI
+
+from make_pyCUTEst_problem_list import make_pyCUTEst_problem_list
 
 # Initialize MPI
 comm = MPI.COMM_WORLD

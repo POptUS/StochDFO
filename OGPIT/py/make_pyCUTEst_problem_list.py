@@ -26,9 +26,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import numpy as np
-import ipdb
-
 import pycutest
 
 #########################################
@@ -42,8 +39,6 @@ probstrings = pycutest.find_problems(**filters)
 nprobs = len(probstrings)
 
 print(f"There are %d problems matching the specifications." % (nprobs))
-
-# ipdb.set_trace(context=21)
 
 
 ## write the query results to a file
@@ -62,8 +57,6 @@ from pycutest import import_problem
 
 
 def make_pyCUTEst_problem_list():
-
-    #    ipdb.set_trace(context=21)
 
     # Create problem instances
     #    fminsurf = import_problem('FMINSURF', sifParams={'P': 4}) # n=16
