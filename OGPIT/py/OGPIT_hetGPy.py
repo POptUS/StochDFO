@@ -43,10 +43,8 @@ from hetgpy.optim import crit_EI, crit_logEI
 from hetgpy.qEI import qEI_cpp
 from hetgpy.utils import duplicated
 from pydoe import lhs as lhspy
-from scipy import optimize, spatial
+from scipy import optimize
 from scipy.linalg.lapack import dtrtri
-from scipy.sparse import csr_matrix, lil_matrix
-from scipy.stats import multivariate_normal
 
 # import os
 # os.environ['R_HOME'] = '/usr/bin/R'
@@ -111,7 +109,7 @@ def vared(model, xnew, x=None, nr=None, forceSym=True):
     if nr is None:
         nr = np.ones(xnew.shape[0])
     if model["trendtype"] != "SK":
-        print("This function is intented for simple kriging")
+        print("This function is intended for simple kriging")
 
     knxnew = cov_gen(X1=xnew, X2=model["X0"], theta=model["theta"], type=model["covtype"])
     cnxnew = cov_gen(X1=xnew, theta=model["theta"], type=model["covtype"])
@@ -564,10 +562,11 @@ def OGPIT(
         else:
             iso = False
 
-    if not iso and not mintheta is None and np.size(mintheta) < d:
-        mintheta = mintheta * np.ones(d)
-    if not iso and not maxtheta is None and np.size(maxtheta) < d:
-        maxtheta = maxtheta * np.ones(d)
+    if not iso:
+        if mintheta is not None and np.size(mintheta) < d:
+            mintheta = mintheta * np.ones(d)
+        if maxtheta is not None and np.size(maxtheta) < d:
+            maxtheta = maxtheta * np.ones(d)
 
     if ncand == "small":
         ncand = min(10 * d, 500)
@@ -633,7 +632,7 @@ def OGPIT(
     # For initialisation and defining variables
     nin = 1
     nnewrep = 1
-    model=mleFun()
+    model = mleFun()
 
     while n < nfmax and delta > mindelta and curcost < maxcost:
 
@@ -1470,11 +1469,11 @@ def STOGPIT(
             #
             # }
 
-            ## Check to trigger local TR search
+            # # Check to trigger local TR search
 
             # Case 1) Too close to an existing design
             if tol_dist > 0:
-                ## Check if new design is not to close to existing design
+                # # Check if new design is not to close to existing design
                 dists = np.sqrt(euclidean_dist(afopt["par"], model["X0"]))
                 if np.min(dists) < tol_dist:
                     globalit = False
@@ -1531,7 +1530,7 @@ def STOGPIT(
                 Zbest = np.concatenate((Zbest, np.atleast_1d(np.min(ptmp["mean"]))))
                 nbest = np.concatenate((nbest, np.atleast_1d(n)))
                 if trace > 0:
-                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", Zbest[-1], "\n")
+                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", Zbest[-1], "\n")
 
             if afopt["value"] < -600:
                 stpc = stpc + 1
@@ -1612,10 +1611,10 @@ def STOGPIT(
                 Zbest = np.concatenate((Zbest, np.atleast_1d(np.min(ptmp["mean"]))))
                 nbest = np.concatenate((nbest, np.atleast_1d(n)))
                 if trace > 0:
-                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", Zbest[-1], "\n")
+                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", Zbest[-1], "\n")
 
         if trace > 0 and fstarsloc is not None:
-            print("#Evals:", n, " Current minimum: ", xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", np.min(fstarsloc), "\n")
+            print("#Evals:", n, " Current minimum: ", xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", np.min(fstarsloc), "\n")
 
     if lightreturn:
         return dict(par=xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, value=np.min(fstarsloc), localpar=xstarsloc * (Upp_o - Low_o) + Low_o, localvalue=fstarsloc)
@@ -1708,15 +1707,6 @@ if __name__ == "__main__":
     else:
         c0 = None
         c1 = None
-
-    #  ns = 1  # Replication is handled internally
-    # nsmax = 20
-
-    # nfs = 1 # number of initially evaluated points
-    # F = np.zeros((nfs,nsmax))
-    # F.fill(np.nan)
-    # F2 = csr_matrix((nfs, nsmax)) # Warning: sparse matrices contain zero as empty values, it should not influence the results
-    # F3 = lil_matrix((nfs, nsmax))
 
     for noise in [0, 0.0001, 0.001, 0.01, 0.1, 1]:
         print(noise)

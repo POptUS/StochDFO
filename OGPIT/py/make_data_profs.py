@@ -32,29 +32,29 @@ import numpy as np
 from plot_data_profile import plot_data_profile
 
 # Appendix
-# A) ## check influence of gamma
+# # A) ## check influence of gamma
 # solvers = ["defaultnew", "gamma09", "gamma06"]
 # solverscap = ["default (gamma=0.8)", "gamma=0.9", "gamma=0.6"]
-## B) check influence of imse coefficient
+# # B) check influence of imse coefficient
 # solvers = ["defaultnew", "imse01", "imse1", "imse100"]
 # solverscap = ["default (imse=10)", "imse=0.1", "imse=1", "imse=100"]
-## C) Compare with actual fixed rep
+# # C) Compare with actual fixed rep
 # solvers = ["defaultnew", "fixed250rep", "fixed500rep", "fixed1000rep"]
 # solverscap = ["default",  "fixed 250 reps", "fixed 500 reps", "fixed 1000rep"]
-## D) check the influence of vred
+# # D) check the influence of vred
 # solvers = ["defaultnew", "vred05", "vred01"]
 # solverscap = ["default (0.2)", "Ta = 0.5", "Ta 0.1"]
-## E) check the influence of relvarxnew
+# # E) check the influence of relvarxnew
 solvers = ["defaultnew", "cvred1", "cvred9", "cvred16"]
 solverscap = ["default (4)", "PVR 1", "PVR 9", "PVR 16"]
 
 
-## for results in the paper
+# # for results in the paper
 # solvers = ["default", "turbo", "botorch", "snowpac"]
 # solverscap = ["OGPIT", "TuRBO", "BoTorch", "SNOWPAC"]
 
 
-## Bendfo results
+# # Bendfo results
 bendfo = False
 # solvers = ["pydefault", "turbo", "botorch"]
 # solverscap = ["OGPIT", "TuRBO", "BoTorch"]
