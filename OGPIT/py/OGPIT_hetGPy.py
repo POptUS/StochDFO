@@ -630,6 +630,11 @@ def OGPIT(
     increasens = False
     settings = dict(trace=trace)
 
+    # For initialisation and defining variables
+    nin = 1
+    nnewrep = 1
+    model=mleFun()
+
     while n < nfmax and delta > mindelta and curcost < maxcost:
 
         # Increase the amount of unitary runs of the function for one evaluation
@@ -1283,7 +1288,7 @@ def crit_qRI_rep2(xnew, xc, xmin, model, maxrep, c0=0, c1=0, cst=None, preds=Non
 #' @param maxrep max number of replicates
 #' @param threshold minimal relative qRI reduction brought by one additional new rep
 #' @param returnnr is the number of replicates to be returned?
-#' @param type either totrep for totrepthreshold or consrep for consrepthreshold
+#' @param type totrep for totrepthreshold
 #' @importFrom stats cov2cor
 #' @export
 def crit_qRI_auto(xnew, xc, xmin, model, maxrep, cst=None, threshold=0.05, type="totrep", preds=None, method="fast", digits=6, returnnr=True):
@@ -1292,10 +1297,10 @@ def crit_qRI_auto(xnew, xc, xmin, model, maxrep, cst=None, threshold=0.05, type=
     if len(xnew.shape) == 1:
         xnew = xnew.reshape(-1, model.X0.shape[1])
 
-    if type == "consrep":
-        nr = min(maxrep, max(1, cons_rep_thres(xnew=xnew, model=model, threshold=0.01, maxrep=maxrep)))
-    else:
-        nr = min(maxrep, max(1, tot_rep_thres(xnew=xnew, model=model, threshold=threshold)))
+    # if type == "consrep":
+    #     nr = min(maxrep, max(1, cons_rep_thres(xnew=xnew, model=model, threshold=0.01, maxrep=maxrep)))
+    # else:
+    nr = min(maxrep, max(1, tot_rep_thres(xnew=xnew, model=model, threshold=threshold)))
 
     val = crit_qRIt(x=np.round(np.vstack((xnew, xc, xmin)), decimals=digits), xnew=np.round(xnew, decimals=digits), cst=cst, model=model, nr=nr, preds=preds, method=method)
     if returnnr:
