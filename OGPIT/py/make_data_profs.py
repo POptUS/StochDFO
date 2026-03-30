@@ -171,7 +171,7 @@ for nois in noises:
                         n = dims[prob_num - 1]  # Results['X'].shape[1]
                     N[p_count] = n + 1
 
-                FHIST[0:len(Fvals), p_count, solver_num] = Fvals
+                FHIST[0 : len(Fvals), p_count, solver_num] = Fvals
 
     if bendfo:
         if p_count + 1 < num_total_probs:

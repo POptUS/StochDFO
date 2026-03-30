@@ -1469,11 +1469,11 @@ def STOGPIT(
             #
             # }
 
-            ## Check to trigger local TR search
+            # # Check to trigger local TR search
 
             # Case 1) Too close to an existing design
             if tol_dist > 0:
-                ## Check if new design is not to close to existing design
+                # # Check if new design is not to close to existing design
                 dists = np.sqrt(euclidean_dist(afopt["par"], model["X0"]))
                 if np.min(dists) < tol_dist:
                     globalit = False
