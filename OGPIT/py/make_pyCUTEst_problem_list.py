@@ -41,7 +41,7 @@ nprobs = len(probstrings)
 print(f"There are %d problems matching the specifications." % (nprobs))
 
 
-## write the query results to a file
+# # write the query results to a file
 # import sys
 # sys.stdout = open(r"pyCUTEst_query.txt", "w") # write mode
 # for probstr in probstrings:

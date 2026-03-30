@@ -33,22 +33,20 @@ import random
 import sys
 import time
 from math import sqrt
+from pathlib import Path
 
 import cma
 import numpy as np
+from calfun import calfun
+from dfoxs import dfoxs
 from mpi4py import MPI
 from scipy import optimize
 from scipy.interpolate import interp1d
 
+from OGPIT_hetGPy import OGPIT
+
 test_cma = False
 test_cman = False
-
-from pathlib import Path
-
-from calfun import calfun
-from dfoxs import dfoxs
-
-from OGPIT_hetGPy import OGPIT
 
 
 def log_and_abort(msg):

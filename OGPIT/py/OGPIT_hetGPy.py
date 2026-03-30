@@ -43,10 +43,8 @@ from hetgpy.optim import crit_EI, crit_logEI
 from hetgpy.qEI import qEI_cpp
 from hetgpy.utils import duplicated
 from pydoe import lhs as lhspy
-from scipy import optimize, spatial
+from scipy import optimize
 from scipy.linalg.lapack import dtrtri
-from scipy.sparse import csr_matrix, lil_matrix
-from scipy.stats import multivariate_normal
 
 # import os
 # os.environ['R_HOME'] = '/usr/bin/R'
@@ -564,10 +562,11 @@ def OGPIT(
         else:
             iso = False
 
-    if not iso and not mintheta is None and np.size(mintheta) < d:
-        mintheta = mintheta * np.ones(d)
-    if not iso and not maxtheta is None and np.size(maxtheta) < d:
-        maxtheta = maxtheta * np.ones(d)
+    if not iso:
+        if mintheta is not None and np.size(mintheta) < d:
+            mintheta = mintheta * np.ones(d)
+        if maxtheta is not None and np.size(maxtheta) < d:
+            maxtheta = maxtheta * np.ones(d)
 
     if ncand == "small":
         ncand = min(10 * d, 500)
@@ -633,7 +632,7 @@ def OGPIT(
     # For initialisation and defining variables
     nin = 1
     nnewrep = 1
-    model=mleFun()
+    model = mleFun()
 
     while n < nfmax and delta > mindelta and curcost < maxcost:
 
@@ -1708,15 +1707,6 @@ if __name__ == "__main__":
     else:
         c0 = None
         c1 = None
-
-    #  ns = 1  # Replication is handled internally
-    # nsmax = 20
-
-    # nfs = 1 # number of initially evaluated points
-    # F = np.zeros((nfs,nsmax))
-    # F.fill(np.nan)
-    # F2 = csr_matrix((nfs, nsmax)) # Warning: sparse matrices contain zero as empty values, it should not influence the results
-    # F3 = lil_matrix((nfs, nsmax))
 
     for noise in [0, 0.0001, 0.001, 0.01, 0.1, 1]:
         print(noise)

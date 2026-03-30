@@ -42,7 +42,7 @@ import cma
 import gpytorch
 import numpy as np
 
-## Based on https://botorch.org/docs/tutorials/turbo_1/
+# Based on https://botorch.org/docs/tutorials/turbo_1/
 import torch
 from botorch.acquisition import qExpectedImprovement, qLogExpectedImprovement, qLogNoisyExpectedImprovement, qNoisyExpectedImprovement
 from botorch.exceptions import BadInitialCandidatesWarning
