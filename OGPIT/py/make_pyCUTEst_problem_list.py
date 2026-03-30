@@ -38,7 +38,7 @@ probstrings = pycutest.find_problems(**filters)
 
 nprobs = len(probstrings)
 
-print(f"There are %d problems matching the specifications." % (nprobs))
+print(f"There are {nprobs} problems matching the specifications.")
 
 
 # # write the query results to a file

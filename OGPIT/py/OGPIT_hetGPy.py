@@ -109,7 +109,7 @@ def vared(model, xnew, x=None, nr=None, forceSym=True):
     if nr is None:
         nr = np.ones(xnew.shape[0])
     if model["trendtype"] != "SK":
-        print("This function is intented for simple kriging")
+        print("This function is intended for simple kriging")
 
     knxnew = cov_gen(X1=xnew, X2=model["X0"], theta=model["theta"], type=model["covtype"])
     cnxnew = cov_gen(X1=xnew, theta=model["theta"], type=model["covtype"])
@@ -1469,11 +1469,11 @@ def STOGPIT(
             #
             # }
 
-            ## Check to trigger local TR search
+            # # Check to trigger local TR search
 
             # Case 1) Too close to an existing design
             if tol_dist > 0:
-                ## Check if new design is not to close to existing design
+                # # Check if new design is not to close to existing design
                 dists = np.sqrt(euclidean_dist(afopt["par"], model["X0"]))
                 if np.min(dists) < tol_dist:
                     globalit = False
@@ -1530,7 +1530,7 @@ def STOGPIT(
                 Zbest = np.concatenate((Zbest, np.atleast_1d(np.min(ptmp["mean"]))))
                 nbest = np.concatenate((nbest, np.atleast_1d(n)))
                 if trace > 0:
-                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", Zbest[-1], "\n")
+                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", Zbest[-1], "\n")
 
             if afopt["value"] < -600:
                 stpc = stpc + 1
@@ -1611,10 +1611,10 @@ def STOGPIT(
                 Zbest = np.concatenate((Zbest, np.atleast_1d(np.min(ptmp["mean"]))))
                 nbest = np.concatenate((nbest, np.atleast_1d(n)))
                 if trace > 0:
-                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", Zbest[-1], "\n")
+                    print("(Update) #Evals:", n, " Current minimum: ", Xbest[-1, :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", Zbest[-1], "\n")
 
         if trace > 0 and fstarsloc is not None:
-            print("#Evals:", n, " Current minimum: ", xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, " Estimated mininum: ", np.min(fstarsloc), "\n")
+            print("#Evals:", n, " Current minimum: ", xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, " Estimated minimum: ", np.min(fstarsloc), "\n")
 
     if lightreturn:
         return dict(par=xstarsloc[np.argmin(fstarsloc), :] * (Upp_o - Low_o) + Low_o, value=np.min(fstarsloc), localpar=xstarsloc * (Upp_o - Low_o) + Low_o, localvalue=fstarsloc)
